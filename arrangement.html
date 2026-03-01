@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>人員配置図</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="icons/Tokyo_AIfavicon.png" type="image/x-icon">
+</head>
+
+<body>
+
+<header class="topbar">
+    <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <h1>人員配置図</h1>
+    </div>
+    <div class="topbar-right">
+        <div id="headerClock" class="header-clock"></div>
+    <div class="profile">
+        <button id="profileBtn" class="profile-btn">👤</button>
+        <div id="profileMenu" class="profile-menu">
+            <div class="profile-name" id="profileName"></div>
+            <hr>
+            <button id="logoutBtn" class="logout-btn">ログアウト</button>
+        </div>
+    </div>
+</header>
+
+<nav id="sidebar" class="sidebar open">
+    <a href="home.html" title="家">
+        <img src="icons/home.png">
+    </a>
+    <a href="list.html" title="座席表管理">
+        <img src="icons/Char.png">
+    </a>
+    <a href="chat.html" title="チャット">
+        <img src="icons/chat.png">
+    </a>
+    <a href="manage.html" title="当日名簿">
+        <img src="icons/Registrant_list.png">
+    </a>
+
+    <a href="arrangement.html" title="配置図">
+        <img src="icons/arrangement.png">
+    </a>
+</nav>
+
+<div class="page">
+
+<div class="arrangement-wrapper">
+
+    <!-- 左パネル -->
+    <div class="left-panel">
+
+        <h2>スタッフ</h2>
+
+        <h3>チーム選択</h3>
+        <label><input type="checkbox" value="T"> Tチーム</label>
+        <label><input type="checkbox" value="K"> Kチーム</label>
+        <label><input type="checkbox" value="A"> Aチーム</label>
+        <label><input type="checkbox" value="I"> Iチーム</label>
+
+        <div id="teamResult" class="member-list"></div>
+    </div>
+
+    <!-- 教室エリア -->
+    <div class="class-area">
+
+        <div class="class-box" data-room="エントランス">エントランス</div>
+        <div class="class-box" data-room="20A">20A</div>
+        <div class="class-box" data-room="20B">20B</div>
+        <div class="class-box" data-room="30A">30A</div>
+        <div class="class-box" data-room="30B">30B</div>
+        <div class="class-box" data-room="40A">40A</div>
+        <div class="class-box" data-room="40B">40B</div>
+        <div class="class-box" data-room="50A">50A</div>
+        <div class="class-box" data-room="50B">50B</div>
+
+    </div>
+
+</div>
+</div>
+<script>
+function toggleMenu(){
+    const sidebar=document.getElementById("sidebar");
+    const page=document.getElementById("page");
+
+    sidebar.classList.toggle("close");
+    page.classList.toggle("full");
+}
+
+</script>
+<script type="module" src="layout.js"></script>
+<script type="module" src="arrangement.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>

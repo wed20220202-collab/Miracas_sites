@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ログイン</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="index.css">
+<link rel="icon" href="icons/Tokyo_AIfavicon.png" type="image/x-icon">
+</head>
+<body class="login-page">
+
+<div class="login-box">
+
+  <img src="icons/Tokyo_AI.png" class="login-logo">
+
+  <h1>OC運営システム</h1>
+
+    <button id="googleLogin" class="google-btn">
+        Googleでログイン
+    </button>
+
+    <div id="error" class="error"></div>
+</div>
+
+<script type="module" src="auth.js"></script>
+
+<script type="module">
+import { auth, db } from "./firebase.js";
+import { onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+
+import {
+  addDoc,
+  collection,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+onAuthStateChanged(auth, async (user)=>{
+
+  if(!user) return;
+
+  try{
+    await addDoc(collection(db,"loginLogs"),{
+      email: user.email,
+      loginTime: serverTimestamp()
+    });
+  }catch(e){
+    console.log("ログインログ保存失敗:", e);
+  }
+
+});
+</script>
+
+</body>
+</html>

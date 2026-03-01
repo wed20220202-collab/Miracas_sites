@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>🏠ホーム</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ===== ヘッダー ===== -->
+<header class="topbar">
+    <h1>ホーム画面</h1>    
+    <div class="topbar-right">
+        <div id="headerClock" class="header-clock"></div>
+    <div class="profile">
+        <button id="profileBtn" class="profile-btn">👤</button>
+
+        <div id="profileMenu" class="profile-menu">
+            <div class="profile-name" id="profileName">ログイン中</div>
+            <hr>
+            <button id="logoutBtn" class="logout-btn">ログアウト</button>
+        </div>
+    </div>
+</header>
+
+<!-- ===== レイアウト ===== -->
+<div class="layout">
+
+    <!-- サイドバー -->
+    <nav id="sidebar" class="sidebar">
+        <a href="home.html" title="家">
+            <img src="icons/home.png">
+        </a>
+        <a href="list.html" title="座席表管理">
+            <img src="icons/char.png">
+        </a>
+        <a href="chat.html" title="チャット">
+            <img src="icons/chat.png">
+        </a>
+        <a href="manage.html" title="当日名簿">
+            <img src="icons/Registrant_list.png">
+        </a>
+        <a href="arrangement.html" title="配置図">
+            <img src="icons/arrangement.png">
+        </a>
+    </nav>
+
+    <!-- メイン -->
+    <main class="main">
+
+        <section class="chat-box">
+            <div class="chat-title">最新連絡</div>
+            <div class="chat-log" id="chatLog"></div>
+        </section>
+
+        <div class="shortcut">
+            <a href="list.html" class="card">
+                <img src="icons/Char.png">
+                <span>座席表管理</span>
+            </a>
+
+            <a href="manage.html" class="card">
+                <img src="icons/Registrant_list.png">
+                <span>当日名簿</span>
+            </a>
+
+            <a href="arrangement.html" class="card">
+                <img src="icons/arrangement2.png">
+                <span>配置図</span>
+            </a>
+
+            <a href="#" id="openNoticePopup" class="card">
+                <img src="icons/Information.png">
+                <span>伝達事項</span>
+            </a>
+        </div>
+
+    </main>
+
+    <!-- 時計 -->
+    <div class="clock-area">
+        <canvas id="analogClock" width="200" height="200"></canvas>
+        <div id="digitalClock" style="display:none;"></div>
+    </div>
+</div>
+
+<script type="module" src="layout.js"></script>
+<script type="module" src="script.js"></script>
+
+<div id="noticeOverlay" class="notice-overlay">
+
+  <div class="notice-popup">
+
+        <div class="notice-header">
+            <div>
+                <h2>伝達事項</h2>
+                <div class="notice-meta">
+                    <span id="noticeDate">最終更新：--</span><br>
+                    <span id="noticeUser">更新者：--</span>
+                </div>
+            </div>
+
+            <img src="icons/pen.png" id="toggleEditBtn" class="notice-pen">
+        </div>
+
+        <div id="noticePreview" class="notice-preview">
+            現在お知らせはありません。
+        </div>
+
+        <textarea id="noticeEditor"
+            class="notice-editor"
+            style="display:none;"
+            placeholder="・テキストを入力">
+        </textarea>
+
+  </div>
+
+</div>
+
+<script type="module">
+import { auth, db } from "./firebase.js";
+import {
+  doc,
+  setDoc,
+  onSnapshot,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+const docRef = doc(db, "homeNotices", "current");
+
+const openBtn = document.getElementById("openNoticePopup");
+const overlay = document.getElementById("noticeOverlay");
+const toggleBtn = document.getElementById("toggleEditBtn");
+const preview = document.getElementById("noticePreview");
+const editor = document.getElementById("noticeEditor");
+const noticeDate = document.getElementById("noticeDate");
+const noticeUser = document.getElementById("noticeUser");
+
+let editMode = false;
+let currentUser = null;
+
+/* ===== ログイン監視 ===== */
+auth.onAuthStateChanged(user=>{
+  if(user){
+    currentUser = user;
+  }
+});
+
+/* ===== ポップアップ ===== */
+openBtn.addEventListener("click", e=>{
+  e.preventDefault();
+  overlay.classList.add("show");
+});
+
+overlay.addEventListener("click", e=>{
+  if(e.target === overlay){
+    overlay.classList.remove("show");
+  }
+});
+
+/* ===== 編集切替 ===== */
+toggleBtn.addEventListener("click", async ()=>{
+
+  editMode = !editMode;
+
+  if(editMode){
+
+    editor.style.display = "block";
+    preview.style.display = "none";
+    editor.value = preview.textContent;
+    editor.focus();
+
+  } else {
+
+    preview.style.display = "block";
+    editor.style.display = "none";
+
+    const text = editor.value;
+    preview.textContent = text;
+
+    if(currentUser){
+      await setDoc(docRef,{
+        notice: text,
+        updatedAt: serverTimestamp(),
+        updatedBy: currentUser.email
+      },{ merge:true });
+    }
+
+  }
+});
+
+/* ===== リアルタイム監視 ===== */
+onSnapshot(docRef, snap=>{
+
+  if(!snap.exists()) return;
+
+  const data = snap.data();
+
+  preview.textContent =
+    data.notice || "現在お知らせはありません。";
+
+  if(data.updatedAt){
+    const d = data.updatedAt.toDate();
+
+    noticeDate.textContent =
+      "最終更新：" +
+      d.getFullYear()+"/"+
+      String(d.getMonth()+1).padStart(2,"0")+"/"+
+      String(d.getDate()).padStart(2,"0")+" "+
+      String(d.getHours()).padStart(2,"0")+":"+
+      String(d.getMinutes()).padStart(2,"0");
+  }
+
+  noticeUser.textContent =
+    "更新者：" + (data.updatedBy || "--");
+
+});
+</script>
+<script type="module">
+import { auth, db } from "./firebase.js";
+import { doc, getDoc }
+from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+auth.onAuthStateChanged(async user=>{
+
+  if(!user){
+    location.href="index.html";
+    return;
+  }
+
+
+  // 管理者は時間制限なし
+  const adminEmails = [
+    "vga29-pc250033@sankogakuen.jp",
+    "vga29-pc250006@sankogakuen.jp",
+    "vga29-pc250029@sankogakuen.jp"
+  ];
+
+  if(adminEmails.includes(user.email)){
+    return;
+  }
+
+  const snap = await getDoc(doc(db,"settings","timeConfig"));
+  if(!snap.exists()) return;
+
+  const data = snap.data();
+  const now = new Date().getHours();
+
+  if(now < data.startHour || now >= data.endHour){
+
+    document.body.innerHTML = `
+      <div style="text-align:center;margin-top:100px;">
+        <h1>現在利用時間外です</h1>
+        <p>${data.startHour}時〜${data.endHour}時のみ利用可能です。</p>
+      </div>
+    `;
+
+  }
+
+});
+</script>
+</body>
+</html>

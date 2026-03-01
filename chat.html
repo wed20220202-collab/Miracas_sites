@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>連絡チャット</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="icons/Tokyo_AIfavicon.png" type="image/x-icon">
+</head>
+<body>
+
+<!-- ===== ヘッダー ===== -->
+<header class="topbar">
+    <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <h1>連絡チャット</h1>
+    </div>
+    <div class="topbar-right">
+        <div id="headerClock" class="header-clock"></div>
+    <div class="profile">
+        <button id="profileBtn" class="profile-btn">👤</button>
+        <div id="profileMenu" class="profile-menu">
+            <div class="profile-name" id="profileName"></div>
+            <hr>
+            <button id="logoutBtn" class="logout-btn">ログアウト</button>
+        </div>
+    </div>
+</header>
+
+
+<!-- ===== サイドバー ===== -->
+<nav id="sidebar" class="sidebar open">
+    <a href="home.html" title="家">
+        <img src="icons/home.png">
+    </a>
+    <a href="list.html" title="座席表管理">
+        <img src="icons/Char.png">
+    </a>
+    <a href="chat.html" title="チャット">
+        <img src="icons/chat.png">
+    </a>
+    <a href="manage.html" title="当日名簿">
+        <img src="icons/Registrant_list.png">
+    </a>
+
+    <a href="arrangement.html" title="配置図">
+        <img src="icons/arrangement.png">
+    </a>
+</nav>
+
+<!-- ===== ページ本体 ===== -->
+<div id="page" class="page shift">
+
+<div class="chat-layout">
+
+    <!-- ===== ユーザー登録パネル ===== -->
+    <section class="user-panel">
+        <h2>担当場所</h2>
+
+        <div id="userButtons" class="user-buttons">
+            <button data-name="エントランス">エントランス</button>
+            <button data-name="留学生対応">留学生対応</button>
+            <button data-name="３０Ａ">３０Ａ</button>
+            <button data-name="３０Ｂ">３０Ｂ</button>
+            <button data-name="４０Ａ">４０Ａ</button>
+            <button data-name="４０Ｂ">４０Ｂ</button>
+            <button data-name="５０Ａ">５０Ａ</button>
+            <button data-name="５０Ｂ">５０Ｂ</button>
+            <button data-name="入試対応">入試対応</button>
+            <button data-name="職員室">職員室</button>
+            <button data-name="蓮沼T">蓮沼T</button>
+            <button data-name="小山T">小山T</button>
+        </div>
+
+        <div class="other">
+            <input id="customName" placeholder="その他を入力">
+            <button id="setCustom">設定</button>
+        </div>
+
+        <div class="current">
+            現在：<span id="currentUser">未選択</span>
+        </div>
+    </section>
+
+    <!-- ===== チャットエリア ===== -->
+    <section class="chat-panel">
+
+        <div id="chatLog" class="chat-log"></div>
+
+        <div class="chat-input">
+            <input id="message" placeholder="メッセージを入力">
+            <button id="sendBtn">送信</button>
+        </div>
+
+    </section>
+
+</div>
+</div>
+
+<!-- ===== メニュー開閉スクリプト ===== -->
+<script>
+function toggleMenu(){
+    const sidebar=document.getElementById("sidebar");
+    const page=document.getElementById("page");
+
+    sidebar.classList.toggle("close");
+    page.classList.toggle("full");
+}
+
+</script>
+<script type="module" src="chat.js"></script>
+
+<script type="module" src="layout.js"></script>
+
+
+</body>
+</html>

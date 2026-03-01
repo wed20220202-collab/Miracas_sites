@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>当日名簿</title>
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="icons/Tokyo_AIfavicon.png" type="image/x-icon">
+</head>
+<header class="topbar">
+    <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <h1>当日名簿</h1>
+    </div>
+    <div class="topbar-right">
+        <div id="headerClock" class="header-clock"></div>
+    <div class="profile">
+        <button id="profileBtn" class="profile-btn">👤</button>
+
+        <div id="profileMenu" class="profile-menu">
+            <div class="profile-name" id="profileName"></div>
+            <hr>
+            <button id="logoutBtn" class="logout-btn">
+                ログアウト
+            </button>
+        </div>
+    </div>
+</header>
+<nav id="sidebar" class="sidebar open">
+    <a href="home.html" title="家">
+        <img src="icons/home.png">
+    </a>
+    <a href="list.html" title="座席表管理">
+        <img src="icons/Char.png">
+    </a>
+    <a href="chat.html" title="チャット">
+        <img src="icons/chat.png">
+    </a>
+    <a href="manage.html" title="当日名簿">
+        <img src="icons/Registrant_list.png">
+    </a>
+    <a href="arrangement.html" title="配置図">
+        <img src="icons/arrangement.png">
+    </a>
+</nav>
+
+<body onload="checkLogin(); displayVisitors();">
+
+<div id="page" class="page page2 shift">
+
+<h2>当日名簿</h2>
+
+<div class="data-source-box">
+    <t1>Google スプレッドシートURL挿入欄　</t1>
+    <input id="sheetUrl" placeholder="共有URLを入力">
+
+    <button id="saveSourceBtn">決定</button>
+</div>
+
+<hr>
+<div class="sheet-frame">
+    <iframe id="sheetFrame" src=""></iframe>
+</div>
+
+
+<br>
+
+</div>
+<script type="module">
+
+import { db } from "./firebase.js";
+import {
+    doc,
+    setDoc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+/* =========================
+   メニュー開閉
+========================= */
+window.toggleMenu = function(){
+    const sidebar=document.getElementById("sidebar");
+    sidebar.classList.toggle("close");
+};
+
+/* =========================
+   URL保存
+========================= */
+
+document.getElementById("saveSourceBtn")
+.addEventListener("click", async function(){
+
+    const url =
+        document.getElementById("sheetUrl").value.trim();
+
+    if(!url){
+        alert("URLを入力してください");
+        return;
+    }
+
+    // スプレッドシートID抽出
+    const match = url.match(/\/d\/(.*?)\//);
+
+    if(!match){
+        alert("URL形式が正しくありません");
+        return;
+    }
+
+    const sheetId = match[1];
+
+    // 👇 ここが重要
+    const previewUrl =
+      `https://docs.google.com/spreadsheets/d/${sheetId}`;
+
+    await setDoc(
+        doc(db, "settings", "sheetConfig"),
+        { url: previewUrl }
+    );
+
+    document.getElementById("sheetFrame").src = previewUrl;
+
+    alert("保存しました");
+});
+
+/* =========================
+   ページ読み込み時に取得
+========================= */
+
+window.addEventListener("DOMContentLoaded", async ()=>{
+
+    const docRef =
+        doc(db, "settings", "sheetConfig");
+
+    const snap = await getDoc(docRef);
+
+    if(snap.exists()){
+
+        const savedUrl = snap.data().url;
+
+        document.getElementById("sheetUrl").value = savedUrl;
+        document.getElementById("sheetFrame").src = savedUrl;
+    }
+
+});
+
+</script>
+
+<script type="module" src="layout.js"></script>
+<script type="module" src="manageSource.js"></script>
+<script src="script.js"></script>
+<script src="manage.js"></script>
+<script type="module">
+import { auth } from "./firebase.js";
+
+auth.onAuthStateChanged(user=>{
+
+  if(!user) return;
+
+  const adminEmails = [
+    "vga29-pc250033@sankogakuen.jp",
+    "vga29-pc250006@sankogakuen.jp",
+    "vga29-pc250029@sankogakuen.jp"
+  ];
+
+  if(!adminEmails.includes(user.email)){
+    document.getElementById("sheetUrl").disabled = true;
+    document.getElementById("saveSourceBtn").disabled = true;
+  }
+
+});
+</script>
+</body>
+</html>

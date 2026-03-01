@@ -1,0 +1,19 @@
+.setting-box{
+    margin-bottom:25px;
+}
+
+.danger{
+    background:#e53935;
+}
+
+.danger:hover{
+    background:#b71c1c;
+}
+
+.log-box{
+    max-height:300px;
+    overflow-y:auto;
+    background:#f4f6f9;
+    padding:10px;
+    border-radius:8px;
+}

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>来校者登録</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body onload="checkLogin()">
+<header class="topbar">
+    <div class="topbar-left">
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <h1>来校者登録</h1>
+    </div>
+
+    <div class="profile">
+        <button id="profileBtn" class="profile-btn">👤</button>
+
+        <div id="profileMenu" class="profile-menu">
+            <div class="profile-name" id="profileName"></div>
+            <hr>
+            <button id="logoutBtn" class="logout-btn">
+                ログアウト
+            </button>
+        </div>
+    </div>
+</header>
+<nav id="sidebar" class="sidebar open">
+    <a href="home.html"><img src="icons/home.png"></a>
+    <a href="list.html"><img src="icons/Char.png"></a>
+    <a href="chat.html"><img src="icons/chat.png"></a>
+    <a href="manage.html"><img src="icons/Registrant_list.png"></a>
+    <a href="register.html"><img src="icons/Registrant.png"></a>
+</nav>
+
+<div class="container">
+<h2>来校者登録</h2>
+
+<h3>手入力登録</h3>
+<form onsubmit="addVisitor(event)">
+<input id="name" placeholder="名前" required>
+<input id="hurigana" placeholder="ふりがな" required>
+<input id="grade" placeholder="学年">
+<input id="school" placeholder="学校名">
+<button type="submit">登録</button>
+</form>
+
+<hr>
+
+<h3>CSVインポート</h3>
+<input type="file" id="csvFile" accept=".csv">
+<button onclick="importCSV()">インポート</button>
+
+<br><br>
+<a href="home.html"><button>戻る</button></a>
+</div>
+<script>
+function toggleMenu(){
+    const sidebar=document.getElementById("sidebar");
+    const page=document.getElementById("page");
+
+    sidebar.classList.toggle("close");
+    page.classList.toggle("shift");
+    page.classList.toggle("full");
+}
+</script>
+<script type="module" src="layout.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
