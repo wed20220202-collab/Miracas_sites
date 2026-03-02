@@ -1,4 +1,5 @@
-import { db } from "./firebase.js";
+import { db, auth } from "./firebase.js";
+
 import {
   collection,
   addDoc,
@@ -82,11 +83,32 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const user = auth.currentUser;
+
+    /* 🔵 通常チャット保存 */
     await addDoc(collection(db, "chats"), {
       name: currentUser,
       message: text,
       time: serverTimestamp()
     });
+
+    /* 🔥 送信ログ保存 */
+    if (user) {
+      try {
+        await addDoc(collection(db, "loginLogs"), {
+          action: "chat_send",
+          email: user.email,
+          uid: user.uid,
+          displayName: user.displayName || null,
+          message: text,
+          page: "chat.html",
+          userAgent: navigator.userAgent,
+          timestamp: serverTimestamp()
+        });
+      } catch (e) {
+        console.log("チャット送信ログ失敗:", e);
+      }
+    }
 
     message.value = "";
   });
