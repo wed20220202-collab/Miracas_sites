@@ -212,6 +212,7 @@ input{
 
 .left-panel{
     width:100%;
+    display:none;
 }
 
 .class-area{
@@ -222,10 +223,6 @@ input{
 .class-box{
     width:100%;
     font-size:14px;
-}
-
-.left-panel{
-    display:none;
 }
 
 /* =====================================================
