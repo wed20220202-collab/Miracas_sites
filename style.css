@@ -1429,3 +1429,9 @@ body{
   justify-content:space-between;
   align-items:flex-start;
 }
+
+@media (min-width: 1000px){
+    .user-toggle-header{
+        display:none;
+    }
+}

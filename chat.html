@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>連絡チャット</title>
 <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="mobile.css" media="(max-width: 768px)">
+<link rel="stylesheet" href="mobile.css">
 <link rel="icon" href="icons/Tokyo_AIfavicon.png" type="image/x-icon">
 </head>
 <body>
@@ -55,30 +55,41 @@
 
     <!-- ===== ユーザー登録パネル ===== -->
     <section class="user-panel">
-        <h2>担当場所</h2>
 
-        <div id="userButtons" class="user-buttons">
-            <button data-name="エントランス">エントランス</button>
-            <button data-name="留学生対応">留学生対応</button>
-            <button data-name="３０Ａ">３０Ａ</button>
-            <button data-name="３０Ｂ">３０Ｂ</button>
-            <button data-name="４０Ａ">４０Ａ</button>
-            <button data-name="４０Ｂ">４０Ｂ</button>
-            <button data-name="５０Ａ">５０Ａ</button>
-            <button data-name="５０Ｂ">５０Ｂ</button>
-            <button data-name="入試対応">入試対応</button>
-            <button data-name="職員室">職員室</button>
-            <button data-name="蓮沼T">蓮沼T</button>
-            <button data-name="小山T">小山T</button>
+        <!-- ▼ スマホ用トグルヘッダー -->
+        <div class="user-toggle-header" id="userToggle">
+            担当場所 ▼
         </div>
 
-        <div class="other">
-            <input id="customName" placeholder="その他を入力">
-            <button id="setCustom">設定</button>
-        </div>
+        <!-- ▼ 折りたたみ対象 -->
+        <div class="user-panel-body" id="userPanelBody">
 
-        <div class="current">
-            現在：<span id="currentUser">未選択</span>
+            <h2>担当場所</h2>
+
+            <div id="userButtons" class="user-buttons">
+                <button data-name="エントランス">エントランス</button>
+                <button data-name="留学生対応">留学生対応</button>
+                <button data-name="３０Ａ">３０Ａ</button>
+                <button data-name="３０Ｂ">３０Ｂ</button>
+                <button data-name="４０Ａ">４０Ａ</button>
+                <button data-name="４０Ｂ">４０Ｂ</button>
+                <button data-name="５０Ａ">５０Ａ</button>
+                <button data-name="５０Ｂ">５０Ｂ</button>
+                <button data-name="入試対応">入試対応</button>
+                <button data-name="職員室">職員室</button>
+                <button data-name="蓮沼T">蓮沼T</button>
+                <button data-name="小山T">小山T</button>
+            </div>
+
+            <div class="other">
+                <input id="customName" placeholder="その他を入力">
+                <button id="setCustom">設定</button>
+            </div>
+
+            <div class="current">
+                現在：<span id="currentUser">未選択</span>
+            </div>
+
         </div>
     </section>
 
@@ -111,7 +122,20 @@ function toggleMenu(){
 <script type="module" src="chat.js"></script>
 
 <script type="module" src="layout.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", ()=>{
 
+    const toggle = document.getElementById("userToggle");
+    const body = document.getElementById("userPanelBody");
+
+    if(!toggle || !body) return;
+
+    toggle.addEventListener("click", ()=>{
+        body.classList.toggle("open");
+    });
+
+});
+</script>
 
 </body>
 </html>
