@@ -40,6 +40,8 @@ onAuthStateChanged(auth, async (user)=>{
 
   if(!user) return;
 
+  localStorage.setItem("loginTime",Date.now());
+
   try{
     await addDoc(collection(db,"loginLogs"),{
       email: user.email,
@@ -49,6 +51,8 @@ onAuthStateChanged(auth, async (user)=>{
     console.log("ログインログ保存失敗:", e);
   }
 
+  location.href = "home.html";
+  
 });
 </script>
 

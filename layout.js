@@ -26,6 +26,30 @@ const adminEmails = [
 
 
 /* ===============================
+   セッション制限（3時間）
+================================ */
+const SESSION_LIMIT = 3 * 60 * 60 * 1000; // 3時間
+
+function isSessionExpired() {
+  const loginTime = localStorage.getItem("loginTime");
+  if (!loginTime) return true;
+
+  const diff = Date.now() - Number(loginTime);
+  return diff > SESSION_LIMIT;
+}
+
+async function forceLogout() {
+  localStorage.removeItem("loginTime");
+
+  try {
+    await signOut(auth);
+  } catch (e) {}
+
+  location.href = "index.html";
+}
+
+
+/* ===============================
    DOM読み込み後
 ================================ */
 window.addEventListener("DOMContentLoaded", () => {
@@ -37,10 +61,17 @@ window.addEventListener("DOMContentLoaded", () => {
   const profileMenu = document.getElementById("profileMenu");
 
   /* ===== 認証監視 ===== */
-  onAuthStateChanged(auth, (user) => {
+  onAuthStateChanged(auth, async (user) => {
 
     if (!user) {
       location.href = "index.html";
+      return;
+    }
+
+    // 🔥 セッション期限チェック
+    if (isSessionExpired()) {
+      alert("セッションの有効期限が切れました。再ログインしてください。");
+      await forceLogout();
       return;
     }
 
@@ -74,6 +105,7 @@ window.addEventListener("DOMContentLoaded", () => {
       clearBtn.style.display =
         adminEmails.includes(user.email) ? "inline-block" : "none";
     }
+
   });
 
 
@@ -98,6 +130,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    localStorage.removeItem("loginTime");
     await signOut(auth);
     location.href = "index.html";
   });
