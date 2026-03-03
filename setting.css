@@ -17,3 +17,36 @@
     padding:10px;
     border-radius:8px;
 }
+
+.admin-button-row{
+    display:flex;
+    gap:15px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+button.reset{
+    background:#e53935;
+}
+
+button.reset:hover{
+    background:#b71c1c;
+}
+
+.admin-button-row{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+/* 左ボタンの右側に縦線を入れる */
+.admin-button-row button:first-child{
+    border-right:2px solid #ccc;
+    padding-right:20px;
+}
+
+.vertical-divider{
+    width:2px;
+    height:38px;
+    background:#999;
+}

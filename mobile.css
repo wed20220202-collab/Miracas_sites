@@ -96,14 +96,31 @@ body{
     font-size:14px;
 }
 
+.chat-layout{
+    display:flex;
+    flex-direction:column;
+    height:calc(100vh - 55px - 80px); 
+    /* ヘッダー55px + 下ナビ80pxを引く */
+}
+
+.chat-panel{
+    display:flex;
+    flex-direction:column;
+    flex:1;
+    min-height:0;
+}
+
+.chat-log{
+    flex:1;
+    overflow-y:auto;
+    padding:10px;
+}
+
 .chat-input{
-    position:fixed;
-    bottom:60px;
-    left:0;
-    right:0;
     background:white;
-    padding:8px;
+    padding:10px;
     border-top:1px solid #ddd;
+    width:100%;
 }
 
 .chat-input input{
@@ -174,9 +191,8 @@ body{
     gap:10px;
 }
 
-input{
-    width:100%;
-    display: none;
+.data-source-box input{
+    display:none;
 }
 
 .sheet-frame iframe{
