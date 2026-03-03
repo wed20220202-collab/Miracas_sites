@@ -3,11 +3,48 @@
   border-radius:6px;
   margin:4px 0;
   font-weight:bold;
-  color:white;
+  color:rgb(0, 0, 0);
 }
 
 /* チーム色 */
-.team-T{ background:#3498db; }  /* 青 */
-.team-K{ background:#e67e22; }  /* オレンジ */
-.team-A{ background:#2ecc71; }  /* 緑 */
-.team-I{ background:#9b59b6; }  /* 紫 */
+.team-T{ background:#ff9966; }  /* 青 */
+.team-K{ background:#66ccff; }  /* オレンジ */
+.team-A{ background:#cc66ff; }  /* 緑 */
+.team-I{ background:#99ff66; }  /* 紫 */
+
+/* ===== 教室ごとの背景 ===== */
+.class-box[data-room="受付"]{
+  background:#fce4ec;
+}
+
+.class-box[data-room="20A"]{
+  background:#e3f2fd;
+}
+
+.class-box[data-room="20B"]{
+  background:#e3f2fd;
+}
+
+.class-box[data-room="30A"]{
+  background:#fff3e0;
+}
+
+.class-box[data-room="30B"]{
+  background:#fff3e0;
+}
+
+.class-box[data-room="40A"]{
+  background:#ede7f6;
+}
+
+.class-box[data-room="40B"]{
+  background:#ede7f6;
+}
+
+.class-box[data-room="50A"]{
+  background:#e0f7fa;
+}
+
+.class-box[data-room="50B"]{
+  background:#e0f7fa;
+}
