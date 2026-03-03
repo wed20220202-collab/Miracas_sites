@@ -1,0 +1,13 @@
+.member{
+  padding:6px 8px;
+  border-radius:6px;
+  margin:4px 0;
+  font-weight:bold;
+  color:white;
+}
+
+/* チーム色 */
+.team-T{ background:#3498db; }  /* 青 */
+.team-K{ background:#e67e22; }  /* オレンジ */
+.team-A{ background:#2ecc71; }  /* 緑 */
+.team-I{ background:#9b59b6; }  /* 紫 */

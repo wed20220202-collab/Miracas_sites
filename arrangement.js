@@ -209,8 +209,14 @@ function createMember(name,parent){
   div.textContent = name;
   div.draggable = true;
 
-  addDragEvent(div);
+  // 🔥 チーム判定（先頭1文字）
+  const team = name.charAt(0);
 
+  if(["T","K","A","I"].includes(team)){
+    div.classList.add("team-" + team);
+  }
+
+  addDragEvent(div);
   parent.appendChild(div);
 }
 
