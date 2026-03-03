@@ -48,3 +48,8 @@
 .class-box[data-room="50B"]{
   background:#e0f7fa;
 }
+
+.class-box[data-room="欠席"]{
+  background:#d3d3d3;
+  color:black;
+}

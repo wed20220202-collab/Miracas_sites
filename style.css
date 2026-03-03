@@ -1030,6 +1030,7 @@ body{
     margin: 5px 0;
     border-radius: 6px;
 }
+
 .arrangement-wrapper {
     display: flex;
     gap: 40px;
@@ -1168,7 +1169,6 @@ body{
     align-content: start;
 
     font-size:120%;
-    color:red;
 }
 
 .room-title {

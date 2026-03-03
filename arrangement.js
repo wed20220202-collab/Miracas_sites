@@ -25,6 +25,12 @@ let draggedName = null;
 
 const orderedMemberList = [];
 
+moveAbsenceBox();
+
+window.addEventListener("resize", ()=>{
+  moveAbsenceBox();
+});
+
 teamOrder.forEach(team=>{
   teamData[team].forEach(name=>{
     orderedMemberList.push(team + " " + name);
@@ -199,6 +205,25 @@ function renderAll(){
     }
 
   });
+
+}
+
+function moveAbsenceBox(){
+
+  const absence = document.querySelector(
+    ".class-box[data-room='欠席']"
+  );
+
+  const classArea  = document.querySelector(".class-area");
+  const classArea2 = document.querySelector(".class-area2");
+
+  if(window.innerWidth <= 1000){
+      // 📱 スマホ → class-areaの中
+      classArea.appendChild(absence);
+  }else{
+      // 💻 PC → class-area2へ移動
+      classArea2.appendChild(absence);
+  }
 
 }
 

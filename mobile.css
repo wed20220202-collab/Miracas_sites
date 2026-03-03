@@ -278,3 +278,37 @@ body{
 }
 
 }
+
+/* ===============================
+   欠席ボックス 切り替え制御
+================================ */
+
+/* 🔵 PC版（1001px以上） */
+@media (min-width:1001px){
+
+  /* class-area内の欠席を隠す */
+  .class-area .class-box[data-room="欠席"]{
+      display:none;
+  }
+
+  /* class-area2は表示 */
+  .class-area2{
+      display:block;
+  }
+}
+
+
+/* 📱 スマホ版（1000px以下） */
+@media (max-width:1000px){
+
+  /* class-area2を隠す */
+  .class-area2{
+      display:none;
+  }
+
+  /* class-area内の欠席は表示 */
+  .class-area .class-box[data-room="欠席"]{
+      display:block;
+  }
+
+}
