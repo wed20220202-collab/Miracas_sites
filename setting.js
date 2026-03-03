@@ -96,7 +96,7 @@ document.getElementById("resetArrangementBtn")
         members:newMembers
     });
 
-    alert("全員 waiting にリセットしました");
+    alert("全員リセットしました");
 });
 
 /* =========================
