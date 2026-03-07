@@ -217,6 +217,7 @@ function moveAbsenceBox(){
   const classArea  = document.querySelector(".class-area");
   const classArea2 = document.querySelector(".class-area2");
 
+  /*
   if(window.innerWidth <= 1000){
       // 📱 スマホ → class-areaの中
       classArea.appendChild(absence);
@@ -224,8 +225,11 @@ function moveAbsenceBox(){
       // 💻 PC → class-area2へ移動
       classArea2.appendChild(absence);
   }
+      */
 
 }
+
+
 
 function createMember(name,parent){
 

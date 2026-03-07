@@ -977,7 +977,7 @@ body{
 
 .class-area {
     display: grid;
-    grid-template-columns: repeat(3, 200px);
+    grid-template-columns: repeat(2, 280px);
     gap: 20px;
 }
 
@@ -988,6 +988,8 @@ body{
     padding: 10px;
     font-weight: bold;
 }
+
+
 
 .team-selector {
     margin: 20px 0;
@@ -1147,12 +1149,6 @@ body{
     color: white;
     border: none;
     border-radius: 6px;
-}
-
-.class-area {
-    display: grid;
-    grid-template-columns: repeat(3, 270px);
-    row-gap: 10px;
 }
 
 .class-box {
