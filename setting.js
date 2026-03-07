@@ -47,6 +47,14 @@ window.addEventListener("DOMContentLoaded", async () => {
   const resetBtn  = document.getElementById("resetArrangementBtn");
   const logoutBtn = document.getElementById("logoutBtn");
 
+  const locklist = document.getElementById("lockList");
+  const lockManage = document.getElementById("lockManage");
+  const lockChat = document.getElementById("lockChat");
+  const lockArrangement = document.getElementById("lockArrangement");
+  const saveLockBtn = document.getElementById("saveLockBtn");
+
+  const lockRef = doc(db,"settings","siteLocks");
+
   const docRef = doc(db,"settings","timeConfig");
 
   /* ===== 利用時間読込 ===== */
@@ -56,6 +64,34 @@ window.addEventListener("DOMContentLoaded", async () => {
       startInput.value = data.startHour;
       endInput.value   = data.endHour;
   }
+
+  /* ===== ページロック読込 ===== */
+
+  const lockSnap = await getDoc(lockRef);
+
+  if(lockSnap.exists()){
+      const data = lockSnap.data();
+
+      locklist.checked = data.list || false;
+      lockManage.checked = data.manage || false;
+      lockChat.checked = data.chat || false;
+      lockArrangement.checked = data.arrangement || false;
+  }
+
+  /* ===== ページロック保存 ===== */
+
+  saveLockBtn.addEventListener("click", async ()=>{
+
+      await setDoc(lockRef,{
+          list: locklist.checked,
+          manage: lockManage.checked,
+          chat: lockChat.checked,
+          arrangement: lockArrangement.checked
+      });
+
+      alert("保存しました");
+
+  });
 
   /* ===== 利用時間保存 ===== */
   saveBtn.addEventListener("click", async ()=>{

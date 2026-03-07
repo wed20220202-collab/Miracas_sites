@@ -222,6 +222,7 @@ onSnapshot(docRef, snap=>{
 import { auth, db } from "./firebase.js";
 import { doc, getDoc }
 from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { isAdmin } from "./admin.js";   // ←ここに移動
 
 auth.onAuthStateChanged(async user=>{
 
@@ -230,15 +231,8 @@ auth.onAuthStateChanged(async user=>{
     return;
   }
 
-
   // 管理者は時間制限なし
-  const adminEmails = [
-    "vga29-pc250033@sankogakuen.jp",
-    "vga29-pc250006@sankogakuen.jp",
-    "vga29-pc250029@sankogakuen.jp"
-  ];
-
-  if(adminEmails.includes(user.email)){
+  if(isAdmin(user.email)){
     return;
   }
 

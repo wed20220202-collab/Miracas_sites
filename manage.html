@@ -151,18 +151,13 @@ window.addEventListener("DOMContentLoaded", async ()=>{
 <script src="manage.js"></script>
 <script type="module">
 import { auth } from "./firebase.js";
+import { isAdmin } from "./admin.js";
 
 auth.onAuthStateChanged(user=>{
 
   if(!user) return;
 
-  const adminEmails = [
-    "vga29-pc250033@sankogakuen.jp",
-    "vga29-pc250006@sankogakuen.jp",
-    "vga29-pc250029@sankogakuen.jp"
-  ];
-
-  if(!adminEmails.includes(user.email)){
+  if(!isAdmin(user.email)){
     document.getElementById("sheetUrl").disabled = true;
     document.getElementById("saveSourceBtn").disabled = true;
   }

@@ -2,11 +2,12 @@
    Firebase Imports
 ================================ */
 import { db, auth } from "./firebase.js";
-
 import {
   addDoc,
   collection,
-  serverTimestamp
+  serverTimestamp,
+  doc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 import {
@@ -50,7 +51,7 @@ async function forceLogout() {
   location.href = "index.html";
 }
 
-
+import { isAdmin } from "./admin.js";
 /* ===============================
    DOM読み込み後
 ================================ */
@@ -81,9 +82,9 @@ window.addEventListener("DOMContentLoaded", () => {
     if (profileName) {
       profileName.textContent = user.email;
     }
-
+    
     /* 管理者アイコン */
-    if (adminEmails.includes(user.email) && sidebar) {
+    if (isAdmin(user.email) && sidebar) {
 
       if (!document.getElementById("adminSettingIcon")) {
 
@@ -190,3 +191,55 @@ function startHeaderClock() {
 }
 
 startHeaderClock();
+
+/* ===============================
+   ページロック制御
+================================ */
+
+async function checkPageLocks(){
+
+  const lockSnap = await getDoc(doc(db,"settings","siteLocks"));
+
+  if(!lockSnap.exists()) return;
+
+  const locks = lockSnap.data();
+
+  if(locks.list){
+    disableCard("list","char");
+  }
+
+  if(locks.manage){
+    disableCard("manage","Registrant_list");
+  }
+
+  if(locks.chat){
+    disableCard("chat","chat");
+  }
+
+  if(locks.arrangement){
+    disableCard("arrangement","arrangement");
+  }
+
+}
+
+function disableCard(page,icon){
+
+  const cards = document.querySelectorAll(`a[href="${page}.html"]`);
+
+  cards.forEach(card=>{
+
+    card.style.pointerEvents="none";
+    card.style.opacity="0.5";
+    card.style.cursor="not-allowed";
+
+    const img = card.querySelector("img");
+
+    if(img){
+      img.src = `icons/${icon}_g.png`;
+    }
+
+  });
+
+}
+
+checkPageLocks();
