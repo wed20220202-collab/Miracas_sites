@@ -192,3 +192,26 @@ async function loadLoginLogs(){
         logList.appendChild(div);
     });
 }
+
+const staffRef = doc(db,"staff","members");
+
+document.getElementById("addStaffBtn")
+.addEventListener("click",async()=>{
+
+  const team = document.getElementById("teamSelect").value;
+  const name = document.getElementById("newStaffName").value;
+
+  const snap = await getDoc(staffRef);
+  const data = snap.data();
+
+  if(!data[team]){
+    data[team] = [];
+  }
+
+  data[team].push(name);
+
+  await setDoc(staffRef,data);
+
+  alert("追加しました");
+
+});
