@@ -11,11 +11,11 @@ const docRef = doc(db, "arrangements", "current");
 const teamData = {
   T: ["渡部羽空","藤井蒼太","高藤悠也","清水悠翔","蛭田達也","藤本英里"],
   K: ["石戸巧巳","コウ","吉井美遥","藤元恵太","田村麻依","緑川天翔","岩山佳太","ウー"],
-  A: ["若宮莉生","溝田莉子","菊池真也","鳥海明日香","宮尾十歌"],
+  A: ["若宮莉生","溝田莉子","菊地真也","鳥海明日香","宮尾十歌"],
   I: ["清水晃聖","市川依武生","迎陽菜","亀ケ澤碧","シュウ","田中優哉"]
 };
 
-const teamOrder = ["T","K","A","I"];
+coちnst teamOrder = ["T","K","A","I"];
 
 const result = document.getElementById("teamResult");
 
