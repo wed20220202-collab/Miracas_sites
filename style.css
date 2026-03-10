@@ -183,7 +183,7 @@ button.delete:hover{
     background:white;
     border-radius:10px;
     box-shadow:0 4px 12px rgba(0,0,0,0.1);
-    height:60%;
+    height:45%;
     display:flex;
     flex-direction:column;
 }
@@ -1430,4 +1430,72 @@ body{
     .user-toggle-header{
         display:none;
     }
+}
+
+.name.system{
+  color:red;
+  font-weight:bold;
+}
+
+.sheet-info{
+  margin-top:10px;
+  text-align:center;
+  font-size:14px;
+}
+
+#infoQuantitative{
+  font-weight:bold;
+}
+
+#infoQualitative{
+  color:#666;
+}
+
+.sheet-card{
+  margin-top:15px;
+  padding:14px;
+  background:#ffffff;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  width:200px;
+}
+
+.sheet-row{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+
+.sheet-row2{
+  display:none;
+}
+
+.sheet-label{
+  font-weight:bold;
+  color:#666;
+}
+
+.sheet-value{
+  font-weight:bold;
+  color:#222;
+}
+
+.sheet-edit{
+  width:100%;
+  margin-top:10px;
+  padding:6px;
+  border:none;
+  border-radius:6px;
+  background:#2c5364;
+  color:white;
+  cursor:pointer;
+}
+
+.sheet-edit:hover{
+  background:#203a43;
+}
+
+.oc-frame{
+  width:125%;
+  min-height:610px;
 }

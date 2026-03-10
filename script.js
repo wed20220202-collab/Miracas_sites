@@ -2,10 +2,13 @@
    Home専用スクリプト
    ・最新チャット表示
    ・時計
-   ※ 認証は layout.js がやる
+   ・定量定性表示
+   ・管理者のみ編集可能
 ============================= */
 
-import { db } from "./firebase.js";
+import { db, auth } from "./firebase.js";
+import { isAdmin } from "./admin.js";
+
 import {
   collection,
   query,
@@ -13,11 +16,15 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+const GAS_URL =
+"https://script.google.com/macros/s/AKfycby7PP5BhHBukhAKsy5TznYiCo9linjsphXcsyjM6ct4LJVOavUSnUVcnhnwpu-J1_1pww/exec";
+
 window.addEventListener("DOMContentLoaded", () => {
 
   /* =============================
-     最新チャット表示
+    最新チャット表示
   ============================= */
+
   const chatLog = document.getElementById("chatLog");
 
   if (chatLog) {
@@ -40,8 +47,16 @@ window.addEventListener("DOMContentLoaded", () => {
         const time =
           d.time?.toDate().toLocaleTimeString() || "";
 
+        let nameHTML =
+          `<span class="name">${d.name}</span>`;
+
+        if (d.system === true) {
+          nameHTML =
+          `<span class="name system">Miracas_System</span>`;
+        }
+
         div.innerHTML = `
-          <span class="name">${d.name}</span>
+          ${nameHTML}
           ${d.message}
           <span class="time">${time}</span>
         `;
@@ -51,23 +66,167 @@ window.addEventListener("DOMContentLoaded", () => {
       });
 
     });
+
   }
 
   /* =============================
      時計開始
   ============================= */
+
   startClock();
 
+  /* =============================
+     スプレッドシート情報
+  ============================= */
+
+  const sheetOverlay =
+    document.getElementById("sheetOverlay");
+
+  const editBtn =
+    document.getElementById("editSheetInfo");
+
+  const saveBtn =
+    document.getElementById("saveSheetInfo");
+
+  const quantitativeInput =
+    document.getElementById("quantitativeInput");
+
+  const qualitativeInput =
+    document.getElementById("qualitativeInput");
+
+  const actionInput =
+    document.getElementById("actionInput");
+
+  /* =============================
+     スプレッドシート読み込み
+  ============================= */
+
+  function loadSheetInfo(){
+
+    fetch(GAS_URL)
+    .then(r => r.json())
+    .then(data => {
+
+      document.getElementById("quantitativeText").textContent =
+        data.quantitative;
+
+      document.getElementById("qualitativeText").textContent =
+        data.qualitative;
+
+      document.getElementById("actionText").textContent =
+        data.action;
+
+    });
+
+  }
+
+  loadSheetInfo();
+
+  /* =============================
+     編集ボタン
+  ============================= */
+
+  if(editBtn){
+
+    editBtn.addEventListener("click",()=>{
+
+      quantitativeInput.value =
+        document.getElementById("quantitativeText").textContent;
+
+      qualitativeInput.value =
+        document.getElementById("qualitativeText").textContent;
+
+      actionInput.value =
+        document.getElementById("actionText").textContent;
+
+      sheetOverlay.classList.add("show");
+
+    });
+
+  }
+
+  /* =============================
+     背景クリックで閉じる
+  ============================= */
+
+  if(sheetOverlay){
+
+    sheetOverlay.addEventListener("click", e => {
+
+      if(e.target === sheetOverlay){
+        sheetOverlay.classList.remove("show");
+      }
+
+    });
+
+  }
+
+  /* =============================
+     保存
+  ============================= */
+
+  if(saveBtn){
+
+    saveBtn.addEventListener("click", async ()=>{
+
+      await fetch(GAS_URL,{
+        method:"POST",
+        body:JSON.stringify({
+          quantitative: quantitativeInput.value,
+          qualitative: qualitativeInput.value,
+          action: actionInput.value
+        })
+      });
+
+      sheetOverlay.classList.remove("show");
+
+      loadSheetInfo();
+
+    });
+
+  }
+
+  /* =============================
+     管理者のみ編集可能
+  ============================= */
+
+  auth.onAuthStateChanged(user => {
+
+    if(!user) return;
+
+    const isUserAdmin = isAdmin(user.email);
+
+    if(!isUserAdmin){
+
+      // 入力欄を編集不可
+      quantitativeInput.readOnly = true;
+      qualitativeInput.readOnly = true;
+      actionInput.readOnly = true;
+
+      // 保存ボタンだけ非表示
+      if(saveBtn){
+        saveBtn.style.display = "none";
+      }
+
+    }
+
+  });
+
 });
+
+
 
 /* =============================
    時計
 ============================= */
 
 function startClock() {
+
   setInterval(updateClock, 1000);
   updateClock();
+
 }
+
 
 function updateClock() {
 
@@ -90,6 +249,7 @@ function updateClock() {
   const r = 100;
 
   ctx.clearRect(0, 0, 200, 200);
+
   ctx.save();
   ctx.translate(r, r);
 
@@ -115,17 +275,24 @@ function updateClock() {
   drawHand(ctx, sec, 90, 2);
 
   ctx.restore();
+
 }
 
+
 function drawHand(ctx, pos, len, width) {
+
   ctx.beginPath();
   ctx.lineWidth = width;
   ctx.moveTo(0, 0);
+
   ctx.rotate(pos);
   ctx.lineTo(0, -len);
+
   ctx.stroke();
   ctx.rotate(-pos);
+
 }
+
 
 function drawNumbers(ctx, radius) {
 
@@ -137,9 +304,15 @@ function drawNumbers(ctx, radius) {
   for (let num = 1; num <= 12; num++) {
 
     const ang = num * Math.PI / 6;
-    const x = Math.sin(ang) * (radius * 0.8);
-    const y = -Math.cos(ang) * (radius * 0.8);
+
+    const x =
+      Math.sin(ang) * (radius * 0.8);
+
+    const y =
+      -Math.cos(ang) * (radius * 0.8);
 
     ctx.fillText(num.toString(), x, y);
+
   }
+
 }

@@ -11,7 +11,7 @@
 
 <!-- ===== ヘッダー ===== -->
 <header class="topbar">
-    <h1>ホーム画面</h1>    
+    <h1>ホーム画面</h1>
     <div class="topbar-right">
         <div id="headerClock" class="header-clock"></div>
     <div class="profile">
@@ -76,13 +76,83 @@
                 <span>伝達事項</span>
             </a>
         </div>
+        <!-- 次回オープンキャンパス -->
+        <section class="oc-section">
 
+          <h2 class="oc-title">
+            次回オープンキャンパス
+          </h2>
+
+          <iframe
+            src="https://forms.sanko.ac.jp/90jzde/tokyoai/icgadget.php"
+            class="oc-frame"
+            frameborder="0"
+            loading="lazy">
+          </iframe>
+
+        </section>
     </main>
 
     <!-- 時計 -->
     <div class="clock-area">
         <canvas id="analogClock" width="200" height="200"></canvas>
         <div id="digitalClock" style="display:none;"></div>
+
+        <!-- ▼ 定量・定性カード -->
+        <div class="sheet-card">
+          <div class="sheet-row">
+            <span class="sheet-label">定量</span>
+            <span id="quantitativeText" class="sheet-value">--</span>
+          </div>
+          <div class="sheet-row">
+            <span class="sheet-label">定性</span>
+            <span id="qualitativeText" class="sheet-value">--</span>
+          </div>
+          <div class="sheet-row2">
+            <span class="sheet-label">行動</span>
+            <span id="actionText" class="sheet-value">--</span>
+          </div>
+          <button id="editSheetInfo" class="sheet-edit">
+            確認・編集
+          </button>
+        </div>
+
+        <!-- ▼ 編集ポップアップ -->
+        <div id="sheetOverlay" class="notice-overlay">
+
+          <div class="notice-popup">
+
+            <div class="notice-header">
+              <h2>定量・定性 編集</h2>
+            </div>
+
+            <div style="margin-top:10px">
+
+              <div style="margin-bottom:10px">
+                <label>定量</label><br>
+                <input id="quantitativeInput" style="width:99%">
+              </div>
+
+              <div>
+                <label>定性</label><br>
+                <textarea id="qualitativeInput" style="width:100%; height:100px;"></textarea>
+              </div>
+
+              <div>
+                <label>それに対する具体的な行動</label><br>
+                <textarea id="actionInput" style="width:100%; height:100px;"></textarea>
+              </div>
+
+              <button id="saveSheetInfo" style="margin-top:15px">
+                保存
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
     </div>
 </div>
 

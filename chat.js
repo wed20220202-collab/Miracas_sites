@@ -141,8 +141,14 @@ window.addEventListener("DOMContentLoaded", () => {
       const div = document.createElement("div");
       div.className = "msg";
 
+      let nameHTML = `<span class="name">${d.name}</span>`;
+
+      if (d.system === true) {
+        nameHTML = `<span class="name system">${d.name}</span>`;
+      }
+
       div.innerHTML =
-        `<span class="name">${d.name}</span>：${d.message}`;
+        `${nameHTML}：${d.message}`;
 
       chatLog.appendChild(div);
     });
