@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>リーダー専用ページ</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
+<link rel="icon" href="icons/Tokyo_AIfavicon.png">
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+<style>
+
+.event-layout{
+display:flex;
+gap:30px;
+flex-wrap:wrap;
+}
+
+.calendar-box{
+flex:0.7;
+min-width:350px;
+max-width:420px;
+}
+
+#calendar{
+max-width:400px;
+font-size:0.85em;
+}
+
+.editor-box{
+flex:1;
+min-width:450px;
+}
+
+.event-editor{
+display:grid;
+grid-template-columns:120px 1fr;
+gap:8px 12px;
+align-items:center;
+}
+
+.event-editor h3{
+grid-column:1 / -1;
+margin-top:15px;
+margin-bottom:5px;
+}
+
+.event-editor input,
+.event-editor select,
+.event-editor textarea{
+padding:4px;
+font-size:13px;
+}
+
+textarea{
+resize:vertical;
+width:100%;
+}
+
+.date-row{
+display:flex;
+align-items:center;
+gap:5px;
+}
+
+.small{
+width:65px;
+}
+
+.weekday{
+width:70px;
+background:#f3f3f3;
+text-align:center;
+}
+
+.team-row{
+display:flex;
+gap:5px;
+}
+
+.team{
+width:60px;
+}
+
+.save-btn{
+grid-column:1 / -1;
+margin-top:20px;
+padding:10px;
+font-size:16px;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="event-layout">
+
+<div class="calendar-box">
+
+<h2>イベントカレンダー</h2>
+
+<div id="calendar"></div>
+
+<button onclick="createSheet()" class="save-btn">
+新規イベント作成
+</button>
+
+</div>
+
+
+<div class="editor-box">
+
+<h2>イベント編集</h2>
+
+<div class="event-editor">
+
+<h3>実施日</h3>
+
+<label>実施日</label>
+
+<div class="date-row">
+
+<select id="d3" class="small">
+<option>2026</option>
+<option>2027</option>
+</select>年
+
+<select id="e3" class="small">
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+<option>8</option>
+<option>9</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+</select>月
+
+<select id="f3" class="small"></select>日
+
+<input id="g3" class="weekday" readonly>
+
+</div>
+
+
+<label>記入者</label>
+<input id="j3">
+
+
+<h3>出勤チーム</h3>
+
+<label>チーム</label>
+
+<div class="team-row">
+
+<select id="g4" class="team"></select>
+<select id="h4" class="team"></select>
+<select id="i4" class="team"></select>
+<select id="j4" class="team"></select>
+<select id="k4" class="team"></select>
+
+</div>
+
+
+<h3>目標</h3>
+
+<label>定量</label>
+<input id="e6">
+
+<label>定性</label>
+<textarea id="e7" rows="2"></textarea>
+
+<label>具体的な行動</label>
+<textarea id="d9" rows="2"></textarea>
+
+<label>運営に関する共有</label>
+<textarea id="d11" rows="2"></textarea>
+
+
+<h3>ミラキャス振り返り</h3>
+
+<label>振り返り</label>
+<div>
+<select id="d13" class="place"></select><input id="e13"><br>
+<select id="d14" class="place"></select><input id="e14"><br>
+<select id="d15" class="place"></select><input id="e15"><br>
+<select id="d16" class="place"></select><input id="e16"><br>
+<select id="d17" class="place"></select><input id="e17"><br>
+<select id="d18" class="place"></select><input id="e18"><br>
+<select id="d19" class="place"></select><input id="e19">
+</div>
+
+
+<h3>振り返り</h3>
+
+<label>教員からの振り返り</label>
+<textarea id="d21" rows="3"></textarea>
+
+<label>まとめ</label>
+<textarea id="d27" rows="3"></textarea>
+
+<button class="save-btn" onclick="saveEvent()">保存</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="calendar.js"></script>
+
+</body>
+</html>

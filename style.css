@@ -186,6 +186,7 @@ button.delete:hover{
     height:45%;
     display:flex;
     flex-direction:column;
+    width:85%;
 }
 
 .chat-log{
@@ -302,6 +303,7 @@ button.delete:hover{
     flex:1;
     padding:20px;
     transition:0.3s;
+    position: relative;
 }
 
 .clock-area{
@@ -1498,4 +1500,31 @@ body{
 .oc-frame{
   width:125%;
   min-height:610px;
+}
+
+/* カード */
+.shortcut{
+
+  display:flex;
+  gap:15px;
+
+}
+
+/* 振り返り */
+.review-box{
+
+  position:absolute;
+  left:1000px;
+  width:420px;
+  background:white;
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+  z-index:5;
+  height:108px;
+}
+
+.review-title{
+  font-weight:bold;
+  margin-bottom:10px;
 }

@@ -1,6 +1,7 @@
 /* ===============================
    Firebase Imports
 ================================ */
+import { canOpenCaptain } from "./captain.js";
 import { db, auth } from "./firebase.js";
 import {
   addDoc,
@@ -81,6 +82,28 @@ window.addEventListener("DOMContentLoaded", () => {
     /* メール表示 */
     if (profileName) {
       profileName.textContent = user.email;
+    }
+
+    /* ===============================
+      captainページ表示
+    ================================ */
+
+    if (canOpenCaptain(user.email) && sidebar) {
+
+      if (!document.getElementById("captainIcon")) {
+
+        const a = document.createElement("a");
+        a.id = "captainIcon";
+        a.href = "captain.html";
+        a.title = "キャプテン専用";
+
+        const img = document.createElement("img");
+        img.src = "icons/report.png";
+
+        a.appendChild(img);
+        sidebar.appendChild(a);
+      }
+
     }
     
     /* 管理者アイコン */
