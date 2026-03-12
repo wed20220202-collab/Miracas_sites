@@ -86,3 +86,8 @@ document.getElementById("googleLogin")
     }
 
 });
+
+document.getElementById("form")
+.addEventListener("click", () => {
+    window.open("https://forms.gle/55ei8eiAGBAg9Hbi6","_blank");
+});

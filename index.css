@@ -107,3 +107,46 @@ body.login-page {
     width: 90px;
     margin-bottom: 20px;
 }
+
+.site-footer {
+  width: 100%;             /* 横幅いっぱいに広げる */
+  text-align: center;       /* 文字を中央寄せ */
+  font-size: 0.8rem;
+  color: #888;
+  padding: 20px 10px;
+  border-top: 1px solid #ccc;
+  position: fixed;          /* 常に画面下に表示 */
+  bottom: 0;                /* 下端に固定 */
+  left: 0;                  /* 左端から開始 */
+  background-color: #e3e3e374;   /* 背景色をつけると重なる要素でも見える */
+  box-shadow: 0 -1px 5px rgba(0,0,0,0.1); /* 軽い影で浮いた感じ */
+  z-index: 1000;            /* 他の要素より上に表示 */
+}
+
+/* =========================
+   Googleボタン
+========================= */
+.form-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+
+    background: #a439fc;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.form-btn:hover {
+    background: #8a2be2;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.form-btn:active {
+    transform: scale(0.98);
+}
