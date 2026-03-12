@@ -3,7 +3,7 @@
 =========================== */
 
 const GAS_URL =
-"https://script.google.com/macros/s/AKfycbwmIwXShoaka_KnyIy-sv4GWVIkwqRYWO_RFNuv4-jc3Y71bTpxshjlSTY5H07caToLTg/exec";
+"https://script.google.com/macros/s/AKfycbzUC3JTLPcTzeDERHkZaVbgur2YZAhuAqCCZcKem0fdufqXmqOoWvedFYX-YddpFn1mvA/exec";
 
 let currentDate = null;
 
@@ -13,7 +13,89 @@ let currentDate = null;
 =========================== */
 
 function normalizeDate(date){
-return date.replaceAll("-", "/");
+  return date.replaceAll("-", "/");
+}
+
+
+/* ===========================
+   JSONP ユーティリティ（v4）
+   GASはリダイレクトを経由するためfetch()ではCORSヘッダーが
+   ブラウザに届かない。JSONPを使うことで回避する。
+=========================== */
+
+function jsonpFetch(url){
+  return new Promise((resolve, reject) => {
+
+    const callbackName = "jsonpCb_" + Date.now() + "_" + Math.random().toString(36).slice(2);
+
+    const script = document.createElement("script");
+
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error("JSONP timeout (15秒以内に応答がありません)"));
+    }, 15000);
+
+    function cleanup(){
+      clearTimeout(timer);
+      delete window[callbackName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[callbackName] = function(data){
+      cleanup();
+      
+      /* GASからのエラーレスポンスをチェック */
+      if(data && data.error){
+        reject(new Error("GAS Error: " + data.error));
+      }else{
+        resolve(data);
+      }
+    };
+
+    const sep = url.includes("?") ? "&" : "?";
+    script.src = url + sep + "callback=" + callbackName;
+    
+    script.onerror = function(){
+      cleanup();
+      reject(new Error("JSONP script load error - MIMEタイプまたはネットワークエラー"));
+    };
+
+    document.head.appendChild(script);
+  });
+}
+
+
+/* ===========================
+   JSONP POST（v4）
+   GASはGETのみJSONPが使えるため、POSTデータはGETパラメータに
+   変換して送信する。
+   
+   重要：URLの長さ制限（約2000文字）を超えないようにする
+=========================== */
+
+function jsonpPost(url, data){
+  const params = new URLSearchParams();
+  
+  /* method=POST を明示的に設定 */
+  params.set("method", "POST");
+  
+  /* すべてのデータをパラメータに追加 */
+  Object.keys(data).forEach(k => {
+    const value = String(data[k] || "").trim();
+    params.set(k, value);
+  });
+  
+  const fullUrl = url + "?" + params.toString();
+  
+  /* URLの長さをチェック */
+  if(fullUrl.length > 2000){
+    console.warn("Warning: URL length is " + fullUrl.length + " characters");
+  }
+  
+  console.log("POST URL length: " + fullUrl.length);
+  console.log("POST URL: " + fullUrl.substring(0, 200) + "...");
+  
+  return jsonpFetch(fullUrl);
 }
 
 
@@ -23,11 +105,11 @@ return date.replaceAll("-", "/");
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-initDaySelect();
-initTeams();
-initPlaces();
+  initDaySelect();
+  initTeams();
+  initPlaces();
 
-initCalendar();
+  initCalendar();
 
 });
 
@@ -38,91 +120,101 @@ initCalendar();
 
 function initCalendar(){
 
-const calendar = new FullCalendar.Calendar(
-document.getElementById("calendar"),
-{
+  const calendar = new FullCalendar.Calendar(
+    document.getElementById("calendar"),
+    {
 
-initialView:"dayGridMonth",
+      initialView:"dayGridMonth",
+      dateClick: async function(info){
 
-dateClick: async function(info){
+      showLoading();
 
-const date = normalizeDate(info.dateStr);
+      const date = normalizeDate(info.dateStr);
 
-try{
+      try{
 
-const res = await fetch(
-GAS_URL + "?date=" + encodeURIComponent(date)
-);
+         console.log("Fetching data for date: " + date);
 
-/* 安全にレスポンス取得 */
+         const data = await jsonpFetch(
+            GAS_URL + "?date=" + encodeURIComponent(date)
+         );
 
-const text = await res.text();
+         console.log("Received data:", data);
 
-if(!text){
-alert("データがありません");
-return;
-}
+         currentDate = date;
 
-let data;
+         const [y,m,d] = info.dateStr.split("-");
 
-try{
-data = JSON.parse(text);
-}catch(e){
-console.error("JSON解析エラー",text);
-alert("データ形式エラー");
-return;
-}
+         document.getElementById("d3").value = y;
+         document.getElementById("e3").value = parseInt(m);
+         document.getElementById("f3").value = parseInt(d);
 
-/* シート無し */
+         Object.keys(data).forEach(key=>{
 
-if(data.error){
-alert("イベントが作成されていません");
-return;
-}
+            const el = document.getElementById(key);
+            if(!el) return;
 
-/* シートありならここで日付入力 */
+            let value = String(data[key] || "");
 
-currentDate = date;
+            if(key==="d3") value = value.replace("年","");
+            if(key==="e3") value = value.replace("月","");
+            if(key==="f3") value = value.replace("日","");
 
-const [y,m,d] = info.dateStr.split("-");
+            el.value = value;
 
-document.getElementById("d3").value = y;
-document.getElementById("e3").value = parseInt(m);
-document.getElementById("f3").value = parseInt(d);
+         });
 
-/* データ反映 */
+         updateWeekday();
+         updateTeamOptions();
 
-Object.keys(data).forEach(key=>{
+      }catch(err){
 
-const el = document.getElementById(key);
+         console.error("Calendar fetch error:", err);
 
-if(!el) return;
+         /* シートが無い場合 */
+         if(err.message.includes("no sheet")){
 
-let value = data[key];
+            const ok = confirm(
+            date + " のイベントシートが存在しません。\n作成しますか？"
+            );
 
-if(key==="d3"){ value = value.replace("年",""); }
-if(key==="e3"){ value = value.replace("月",""); }
-if(key==="f3"){ value = value.replace("日",""); }
+            if(ok){
 
-el.value = value;
+            try{
 
-});
+               const res = await jsonpFetch(
+                  GAS_URL +
+                  "?action=create&date=" +
+                  encodeURIComponent(date)
+               );
 
-updateWeekday();
-updateTeamOptions();
+               alert("イベントシートを作成しました");
 
-}catch(err){
+            }catch(e){
 
-console.error(err);
-alert("データ取得エラー");
+               alert("シート作成エラー\n" + e.message);
 
-}
+            }
 
-}
+            }
 
-});
+         }else{
 
-calendar.render();
+            alert("データ取得エラー\n詳細: " + err.message);
+
+         }
+
+      }finally{
+
+         hideLoading();
+
+      }
+
+     }
+
+    });
+
+  calendar.render();
 
 }
 
@@ -133,18 +225,18 @@ calendar.render();
 
 function initDaySelect(){
 
-const select = document.getElementById("f3");
+  const select = document.getElementById("f3");
 
-for(let i=1;i<=31;i++){
+  for(let i=1;i<=31;i++){
 
-const option = document.createElement("option");
+    const option = document.createElement("option");
 
-option.value = i;
-option.textContent = i;
+    option.value = i;
+    option.textContent = i;
 
-select.appendChild(option);
+    select.appendChild(option);
 
-}
+  }
 
 }
 
@@ -155,26 +247,26 @@ select.appendChild(option);
 
 function updateWeekday(){
 
-const y = document.getElementById("d3").value;
-const m = document.getElementById("e3").value;
-const d = document.getElementById("f3").value;
+  const y = document.getElementById("d3").value;
+  const m = document.getElementById("e3").value;
+  const d = document.getElementById("f3").value;
 
-if(!y || !m || !d) return;
+  if(!y || !m || !d) return;
 
-const date = new Date(y,m-1,d);
+  const date = new Date(y,m-1,d);
 
-const w = ["日","月","火","水","木","金","土"];
+  const w = ["日","月","火","水","木","金","土"];
 
-document.getElementById("g3").value =
-w[date.getDay()] + "曜日";
+  document.getElementById("g3").value =
+    w[date.getDay()] + "曜日";
 
 }
 
 document.addEventListener("change",e=>{
 
-if(["d3","e3","f3"].includes(e.target.id)){
-updateWeekday();
-}
+  if(["d3","e3","f3"].includes(e.target.id)){
+    updateWeekday();
+  }
 
 });
 
@@ -183,24 +275,24 @@ updateWeekday();
    チームプルダウン
 =========================== */
 
-const teamList = ["","T","K","A","I"];
+const teamList = ["","T","K","A","I","全チーム"];
 
 function initTeams(){
 
-document.querySelectorAll(".team").forEach(select=>{
+  document.querySelectorAll(".team").forEach(select=>{
 
-teamList.forEach(t=>{
+    teamList.forEach(t=>{
 
-const opt = document.createElement("option");
+      const opt = document.createElement("option");
 
-opt.value = t;
-opt.textContent = t;
+      opt.value = t;
+      opt.textContent = t;
 
-select.appendChild(opt);
+      select.appendChild(opt);
 
-});
+    });
 
-});
+  });
 
 }
 
@@ -211,34 +303,34 @@ select.appendChild(opt);
 
 function updateTeamOptions(){
 
-const selected =
-[...document.querySelectorAll(".team")]
-.map(s=>s.value)
-.filter(v=>v);
+  const selected =
+    [...document.querySelectorAll(".team")]
+    .map(s=>s.value)
+    .filter(v=>v);
 
-document.querySelectorAll(".team").forEach(select=>{
+  document.querySelectorAll(".team").forEach(select=>{
 
-const current = select.value;
+    const current = select.value;
 
-select.querySelectorAll("option").forEach(opt=>{
+    select.querySelectorAll("option").forEach(opt=>{
 
-if(opt.value=="" || opt.value==current){
-opt.disabled=false;
-}else{
-opt.disabled = selected.includes(opt.value);
-}
+      if(opt.value=="" || opt.value==current){
+        opt.disabled=false;
+      }else{
+        opt.disabled = selected.includes(opt.value);
+      }
 
-});
+    });
 
-});
+  });
 
 }
 
 document.addEventListener("change",e=>{
 
-if(e.target.classList.contains("team")){
-updateTeamOptions();
-}
+  if(e.target.classList.contains("team")){
+    updateTeamOptions();
+  }
 
 });
 
@@ -249,84 +341,88 @@ updateTeamOptions();
 
 const placeList = [
 
-"",
-"受付",
-"2F",
-"20A","20B",
-"3F","30A","30B",
-"4F","40A","40B",
-"5F","50A","50B",
-"入試",
-"特待",
-"開発",
-"全員",
-"意見など"
+  "",
+  "受付",
+  "2F",
+  "20A","20B",
+  "3F","30A","30B",
+  "4F","40A","40B",
+  "5F","50A","50B",
+  "入試",
+  "特待",
+  "開発",
+  "全員",
+  "意見など"
 
 ];
 
 function initPlaces(){
 
-document.querySelectorAll(".place").forEach(select=>{
+  document.querySelectorAll(".place").forEach(select=>{
 
-placeList.forEach(p=>{
+    placeList.forEach(p=>{
 
-const opt = document.createElement("option");
+      const opt = document.createElement("option");
 
-opt.value = p;
-opt.textContent = p;
+      opt.value = p;
+      opt.textContent = p;
 
-select.appendChild(opt);
+      select.appendChild(opt);
 
-});
+    });
 
-});
+  });
 
 }
 
 
 /* ===========================
-   保存
+   保存（v4）
+   - POSTリクエストとして送信
+   - レスポンスで {result:"ok"} を確認
+   - 保存内容をコンソールに詳細出力
 =========================== */
 
 async function saveEvent(){
 
-if(!currentDate){
+  if(!currentDate){
+    alert("日付を選択してください");
+    return;
+  }
 
-alert("日付を選択してください");
-return;
+  showLoading();
 
-}
+  const data = {
+    date: normalizeDate(currentDate)
+  };
 
-const data = {
-date: normalizeDate(currentDate)
-};
+  document
+    .querySelectorAll(".event-editor input, .event-editor select, .event-editor textarea")
+    .forEach(el=>{
+      if(el.id){
+        data[el.id] = el.value;
+      }
+    });
 
-document
-.querySelectorAll(
-".event-editor input, .event-editor select, .event-editor textarea"
-)
-.forEach(el=>{
-if(el.id){
-data[el.id] = el.value;
-}
-});
+  try{
 
-try{
+    const result = await jsonpPost(GAS_URL, data);
 
-const params = new URLSearchParams(data);
+    if(result && result.result === "ok"){
+      alert("保存しました");
+    }else{
+      alert("保存エラー");
+    }
 
-await fetch(
-GAS_URL + "?" + params
-);
+  }catch(err){
 
-alert("保存しました");
+    alert("保存エラー\n" + err.message);
 
-}catch(err){
+  }finally{
 
-console.error(err);
-alert("保存エラー");
+    hideLoading();
 
-}
+  }
 
 }
 
@@ -337,39 +433,50 @@ alert("保存エラー");
 
 async function createSheet(){
 
-let date =
-prompt("作成する日付 (例: 2026/04/20)");
+  let date =
+    prompt("作成する日付 (例: 2026/04/20)");
 
-if(!date) return;
+  if(!date) return;
 
-date =
-normalizeDate(date);
+  date = normalizeDate(date);
 
-try{
+  try{
 
-const res =
-await fetch(
-GAS_URL +
-"?action=create&date=" +
-encodeURIComponent(date)
-);
+    console.log("Creating sheet for date: " + date);
 
-const text =
-await res.text();
+    const text = await jsonpFetch(
+      GAS_URL +
+      "?action=create&date=" +
+      encodeURIComponent(date)
+    );
 
-if(text === "created"){
-alert("イベント作成完了");
-}else if(text === "exists"){
-alert("既に存在します");
-}else{
-alert(text);
+    console.log("Create result:", text);
+
+    /* JSONPの場合、GASからの返値は文字列またはオブジェクト */
+
+    const result = typeof text === "string" ? text : JSON.stringify(text);
+
+    if(result === "created" || result.includes("created")){
+      alert("イベント作成完了");
+    }else if(result === "exists" || result.includes("exists")){
+      alert("既に存在します");
+    }else{
+      alert(result);
+    }
+
+  }catch(err){
+
+    console.error("Create sheet error:", err);
+    alert("作成エラー\n詳細: " + err.message);
+
+  }
+
 }
 
-}catch(err){
-
-console.error(err);
-alert("作成エラー");
-
+function showLoading(){
+  document.getElementById("loadingOverlay").style.display="flex";
 }
 
+function hideLoading(){
+  document.getElementById("loadingOverlay").style.display="none";
 }

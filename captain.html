@@ -14,89 +14,198 @@
 <style>
 
 .event-layout{
-display:flex;
-gap:30px;
-flex-wrap:wrap;
+  display:flex;
+  gap:30px;
+  flex-wrap:wrap;
+  position:relative;
+
 }
 
 .calendar-box{
-flex:0.7;
-min-width:350px;
-max-width:420px;
+  flex:0.7;
+  min-width:350px;
+  max-width:420px;
 }
 
 #calendar{
-max-width:400px;
-font-size:0.85em;
+  max-width:400px;
+  font-size:0.85em;
 }
 
 .editor-box{
-flex:1;
-min-width:450px;
+  flex:1;
+  min-width:450px;
 }
 
 .event-editor{
-display:grid;
-grid-template-columns:120px 1fr;
-gap:8px 12px;
-align-items:center;
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:8px 12px;
+  align-items:center;
 }
 
 .event-editor h3{
-grid-column:1 / -1;
-margin-top:15px;
-margin-bottom:5px;
+  grid-column:1 / -1;
+  margin-top:15px;
+  margin-bottom:5px;
 }
 
 .event-editor input,
 .event-editor select,
 .event-editor textarea{
-padding:4px;
-font-size:13px;
+  padding:4px;
+  font-size:13px;
 }
 
 textarea{
-resize:vertical;
-width:100%;
+  resize:vertical;
+  width:100%;
 }
 
 .date-row{
-display:flex;
-align-items:center;
-gap:5px;
+  display:flex;
+  align-items:center;
+  gap:5px;
 }
 
 .small{
-width:65px;
+  width:65px;
 }
 
 .weekday{
-width:70px;
-background:#f3f3f3;
-text-align:center;
+  width:70px;
+  background:#f3f3f3;
+  text-align:center;
 }
 
 .team-row{
-display:flex;
-gap:5px;
+  display:flex;
+  gap:5px;
 }
 
 .team{
-width:60px;
+  width:60px;
 }
 
 .save-btn{
-grid-column:1 / -1;
-margin-top:20px;
-padding:10px;
-font-size:16px;
-cursor:pointer;
+  grid-column:1 / -1;
+  margin-top:20px;
+  padding:10px;
+  font-size:16px;
+  cursor:pointer;
 }
 
+#loadingOverlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.loadingBox{
+  background:white;
+  padding:20px 40px;
+  border-radius:10px;
+  font-size:18px;
+  font-weight:bold;
+}
+
+#loadingOverlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.35);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.spinner{
+  width:60px;
+  height:60px;
+  border:6px solid #ddd;
+  border-top:6px solid #4285f4;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  0%{ transform:rotate(0deg); }
+  100%{ transform:rotate(360deg); }
+}
+
+.calendar-box{
+  flex:0.7;
+  min-width:350px;
+  max-width:420px;
+
+  position:relative;
+  height:fit-content;
+}
+
+.page{
+  transition:margin-left 0.3s;
+}
+
+.page.shift{
+  margin-left:90px;   /* サイドバー幅 */
+}
 </style>
 </head>
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <h1>イベント管理</h1>
+  </div>
 
-<body>
+  <div class="topbar-right">
+    <div id="headerClock" class="header-clock"></div>
+
+    <div class="profile">
+      <button id="profileBtn" class="profile-btn">👤</button>
+
+      <div id="profileMenu" class="profile-menu">
+        <div class="profile-name" id="profileName"></div>
+        <hr>
+        <button id="logoutBtn" class="logout-btn">
+          ログアウト
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<nav id="sidebar" class="sidebar open">
+
+  <a href="home.html" title="家">
+    <img src="icons/home.png">
+  </a>
+  <a href="list.html" title="座席表管理">
+    <img src="icons/char.png">
+  </a>
+  <a href="chat.html" title="チャット">
+    <img src="icons/chat.png">
+  </a>
+  <a href="manage.html" title="当日名簿">
+    <img src="icons/Registrant_list.png">
+  </a>
+  <a href="arrangement.html" title="配置図">
+    <img src="icons/arrangement.png">
+  </a>
+</nav>
+<body onload="checkLogin(); displayVisitors();">
+
+<div id="page" class="page page2 shift">
 
 <div class="event-layout">
 
@@ -126,11 +235,22 @@ cursor:pointer;
 <div class="date-row">
 
 <select id="d3" class="small">
+<option></option>
 <option>2026</option>
 <option>2027</option>
+<option>2028</option>
+<option>2029</option>
+<option>2030</option>
+<option>2031</option>
+<option>2032</option>
+<option>2033</option>
+<option>2034</option>
+<option>2035</option>
+<option>2036</option>
 </select>年
 
 <select id="e3" class="small">
+<option></option>
 <option>1</option>
 <option>2</option>
 <option>3</option>
@@ -153,7 +273,13 @@ cursor:pointer;
 
 
 <label>記入者</label>
-<input id="j3">
+<select id="j3" class="small">
+<option></option>
+<option>T 渡部羽空</option>
+<option>K 石戸巧巳</option>
+<option>A 若宮莉生</option>
+<option>I 清水晃聖</option>
+</select>
 
 
 <h3>出勤チーム</h3>
@@ -215,8 +341,34 @@ cursor:pointer;
 </div>
 
 </div>
-
+</div>
 <script src="calendar.js"></script>
+<script type="module" src="layout.js"></script>
 
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+<script type="module">
+
+import { db } from "./firebase.js";
+import {
+    doc,
+    setDoc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+/* =========================
+   メニュー開閉
+========================= */
+window.toggleMenu = function(){
+
+    const sidebar = document.getElementById("sidebar");
+    const page = document.getElementById("page");
+
+    sidebar.classList.toggle("close");
+    page.classList.toggle("shift");
+
+};
+</script>
 </body>
 </html>
