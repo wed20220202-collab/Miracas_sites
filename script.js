@@ -331,7 +331,13 @@ async function loadPreviousReview(){
       return;
     }
 
-    document.getElementById("improveText").textContent = data.review;
+    // データ反映
+    document.getElementById("improveText").textContent = data.review || "";
+    document.getElementById("otherText").textContent   = data.other || "";
+
+    // ここで truncate
+    truncateText("improveText", 160);
+    truncateText("otherText", 160);
 
   }catch(e){
 
@@ -342,3 +348,15 @@ async function loadPreviousReview(){
 }
 
 loadPreviousReview();
+
+function truncateText(id, maxLength = 160){
+  const el = document.getElementById(id);
+  if(!el) return;
+
+  let text = el.textContent || "";
+  
+  // 文字数が maxLength を超える場合
+  if(text.length > maxLength){
+    el.textContent = text.slice(0, maxLength - 1) + "…";
+  }
+}

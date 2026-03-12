@@ -243,6 +243,10 @@ async function checkPageLocks(){
     disableCard("arrangement","arrangement");
   }
 
+  if(locks.captain){
+    disableCard("captain","report");
+  }
+
 }
 
 function disableCard(page,icon){

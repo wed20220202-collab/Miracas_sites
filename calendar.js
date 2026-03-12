@@ -297,7 +297,7 @@ document.addEventListener("change",e=>{
    名前プルダウン
 =========================== */
 
-const nameList = ["","渡部羽空","石戸巧巳","若宮莉生","清水晃聖"];
+const nameList = ["","渡部羽空","石戸巧巳","若宮莉生","清水晃聖","藤本英里","藤元恵太","溝田莉子","市川依武生"];
 
 function initNames(){
 

@@ -51,6 +51,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const lockManage = document.getElementById("lockManage");
   const lockChat = document.getElementById("lockChat");
   const lockArrangement = document.getElementById("lockArrangement");
+  const lockCaptain = document.getElementById("lockCaptain");
   const saveLockBtn = document.getElementById("saveLockBtn");
 
   const lockRef = doc(db,"settings","siteLocks");
@@ -76,6 +77,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       lockManage.checked = data.manage || false;
       lockChat.checked = data.chat || false;
       lockArrangement.checked = data.arrangement || false;
+      lockCaptain.checked = data.captain || false;
   }
 
   /* ===== ページロック保存 ===== */
@@ -86,10 +88,13 @@ window.addEventListener("DOMContentLoaded", async () => {
           list: locklist.checked,
           manage: lockManage.checked,
           chat: lockChat.checked,
-          arrangement: lockArrangement.checked
+          arrangement: lockArrangement.checked,
+          captain: lockCaptain.checked
       });
 
       alert("保存しました");
+
+      location.reload();
 
   });
 
@@ -192,26 +197,3 @@ async function loadLoginLogs(){
         logList.appendChild(div);
     });
 }
-
-const staffRef = doc(db,"staff","members");
-
-document.getElementById("addStaffBtn")
-.addEventListener("click",async()=>{
-
-  const team = document.getElementById("teamSelect").value;
-  const name = document.getElementById("newStaffName").value;
-
-  const snap = await getDoc(staffRef);
-  const data = snap.data();
-
-  if(!data[team]){
-    data[team] = [];
-  }
-
-  data[team].push(name);
-
-  await setDoc(staffRef,data);
-
-  alert("追加しました");
-
-});
