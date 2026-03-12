@@ -316,3 +316,29 @@ function drawNumbers(ctx, radius) {
   }
 
 }
+
+async function loadPreviousReview(){
+
+  const url = "https://script.google.com/macros/s/AKfycbzUC3JTLPcTzeDERHkZaVbgur2YZAhuAqCCZcKem0fdufqXmqOoWvedFYX-YddpFn1mvA/exec?action=previousReview";
+
+  try{
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if(data.error){
+      document.getElementById("improveText").textContent = "データなし";
+      return;
+    }
+
+    document.getElementById("improveText").textContent = data.review;
+
+  }catch(e){
+
+    document.getElementById("improveText").textContent = "読み込みエラー";
+
+  }
+
+}
+
+loadPreviousReview();
