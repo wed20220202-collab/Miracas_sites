@@ -95,6 +95,18 @@ textarea{
   cursor:pointer;
 }
 
+.export-btn{
+  grid-column:1 / -1;
+  padding:10px;
+  font-size:16px;
+  cursor:pointer;
+  background-color: #ffa700;
+}
+
+.export-btn:hover{
+  background-color: #d27e18;
+}
+
 #loadingOverlay{
   position:fixed;
   top:0;
@@ -273,14 +285,12 @@ textarea{
 
 
 <label>記入者</label>
-<select id="j3" class="small">
-<option></option>
-<option>T 渡部羽空</option>
-<option>K 石戸巧巳</option>
-<option>A 若宮莉生</option>
-<option>I 清水晃聖</option>
-</select>
+<div class="name-row">
 
+<select id="j3" class="name"></select>
+<select id="k3" class="name"></select>
+
+</div>
 
 <h3>出勤チーム</h3>
 
@@ -334,7 +344,8 @@ textarea{
 <label>まとめ</label>
 <textarea id="d27" rows="3"></textarea>
 
-<button class="save-btn" onclick="saveEvent()">保存</button>
+<button class="save-btn" onclick="saveEvent()" id="saveEvent">保存</button>
+<button class="export-btn" onclick="exportEvent()"id="exportPDF">PDF エクスポート</button>
 
 </div>
 

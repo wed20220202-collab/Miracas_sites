@@ -106,13 +106,34 @@ function jsonpPost(url, data){
 document.addEventListener("DOMContentLoaded",()=>{
 
   initDaySelect();
+  initNames();
   initTeams();
   initPlaces();
 
   initCalendar();
 
+  disableEditor();
 });
 
+function disableEditor(){
+
+  document
+    .querySelectorAll(".event-editor input, .event-editor select, .event-editor textarea")
+    .forEach(el=>{
+      el.disabled = true;
+    });
+
+}
+
+function enableEditor(){
+
+  document
+    .querySelectorAll(".event-editor input, .event-editor select, .event-editor textarea")
+    .forEach(el=>{
+      el.disabled = false;
+    });
+
+}
 
 /* ===========================
    カレンダー
@@ -164,6 +185,7 @@ function initCalendar(){
 
          });
 
+         enableEditor();
          updateWeekday();
          updateTeamOptions();
 
@@ -189,6 +211,7 @@ function initCalendar(){
                );
 
                alert("イベントシートを作成しました");
+               disableEditor
 
             }catch(e){
 
@@ -270,12 +293,35 @@ document.addEventListener("change",e=>{
 
 });
 
+/* ===========================
+   名前プルダウン
+=========================== */
+
+const nameList = ["","渡部羽空","石戸巧巳","若宮莉生","清水晃聖"];
+
+function initNames(){
+
+  document.querySelectorAll(".name").forEach(select=>{
+
+    nameList.forEach(n=>{
+
+      const opt = document.createElement("option");
+      opt.value = n;
+      opt.textContent = n;
+
+      select.appendChild(opt);
+
+    });
+
+  });
+
+}
 
 /* ===========================
    チームプルダウン
 =========================== */
 
-const teamList = ["","T","K","A","I","全チーム"];
+const teamList = ["","Tチーム","Kチーム","Aチーム","Iチーム","全チーム"];
 
 function initTeams(){
 
@@ -284,7 +330,6 @@ function initTeams(){
     teamList.forEach(t=>{
 
       const opt = document.createElement("option");
-
       opt.value = t;
       opt.textContent = t;
 
@@ -295,7 +340,6 @@ function initTeams(){
   });
 
 }
-
 
 /* ===========================
    チーム重複防止
@@ -480,3 +524,21 @@ function showLoading(){
 function hideLoading(){
   document.getElementById("loadingOverlay").style.display="none";
 }
+
+document.getElementById("exportPDF").addEventListener("click", async ()=>{
+
+  const date = currentDate; // 今開いている日付
+
+  const res = await fetch(
+    GAS_URL + "?action=exportPDF&date=" + encodeURIComponent(date)
+  );
+
+  const data = await res.json();
+
+  if(data.url){
+    window.open(data.url, "_blank");
+  }else{
+    alert("PDF生成エラー");
+  }
+
+});
