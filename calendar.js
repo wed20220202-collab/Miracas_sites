@@ -211,7 +211,7 @@ function initCalendar(){
                );
 
                alert("イベントシートを作成しました");
-               disableEditor
+               disableEditor();
 
             }catch(e){
 
