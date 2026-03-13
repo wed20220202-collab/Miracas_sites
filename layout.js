@@ -95,7 +95,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const a = document.createElement("a");
         a.id = "captainIcon";
         a.href = "captain.html";
-        a.title = "キャプテン専用";
+        a.title = "一部キャスト専用";
 
         const img = document.createElement("img");
         img.src = "icons/report.png";
