@@ -1460,7 +1460,7 @@ body{
   background:#ffffff;
   border-radius:12px;
   box-shadow:0 4px 10px rgba(0,0,0,0.08);
-  width:200px;
+  width:240px;
 }
 
 .sheet-row{
@@ -1475,12 +1475,15 @@ body{
 
 .sheet-label{
   font-weight:bold;
+  font-size:15px;
   color:#666;
+  width:50px;
 }
 
 .sheet-value{
   font-weight:bold;
   color:#222;
+  font-size:12px;
 }
 
 .sheet-edit{
