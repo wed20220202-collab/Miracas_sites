@@ -1,3 +1,7 @@
+if(location.pathname.includes("chat.html")){
+  localStorage.setItem("lastChatTime", Date.now()/1000);
+}
+
 /* ===============================
    Firebase Imports
 ================================ */
@@ -8,7 +12,11 @@ import {
   collection,
   serverTimestamp,
   doc,
-  getDoc
+  getDoc,
+  query,
+  orderBy,
+  limit,
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 import {
@@ -270,3 +278,45 @@ function disableCard(page,icon){
 }
 
 checkPageLocks();
+
+/* ===============================
+   チャット未読通知
+================================ */
+
+function initChatNotification(){
+
+  const q = query(
+    collection(db,"chats"),
+    orderBy("time","desc"),
+    limit(1)
+  );
+
+  let lastSeen = Number(localStorage.getItem("lastChatTime") || 0);
+
+  onSnapshot(q,(snap)=>{
+
+    const chatIcon = document.getElementById("chatIcon");
+    if(!chatIcon) return;
+
+    snap.forEach(doc=>{
+
+      const d = doc.data();
+      if(!d.time) return;
+
+      const newTime = d.time.seconds;
+
+      if(newTime > lastSeen){
+
+        if(!location.pathname.includes("chat.html")){
+          chatIcon.src = "icons/chat_mes.png";
+        }
+
+      }
+
+    });
+
+  });
+
+}
+
+initChatNotification();

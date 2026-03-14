@@ -6,9 +6,32 @@ import {
   serverTimestamp,
   query,
   orderBy,
-  onSnapshot
+  onSnapshot,
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+async function markChatRead(){
+
+  const q = query(
+    collection(db,"chats"),
+    orderBy("time","desc"),
+    limit(1)
+  );
+
+  const snap = await getDocs(q);
+
+  snap.forEach(doc=>{
+    const d = doc.data();
+
+    if(d.time){
+      localStorage.setItem("lastChatTime", d.time.seconds);
+    }
+  });
+
+}
+
+markChatRead();
 window.addEventListener("DOMContentLoaded", () => {
 
   const sendBtn = document.getElementById("sendBtn");
@@ -134,9 +157,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
     chatLog.innerHTML = "";
 
-    snap.forEach(doc => {
+    const emojis = ["👍","👀","🙇","🔥","❗"];
 
-      const d = doc.data();
+    snap.forEach(docSnap => {
+
+      const d = docSnap.data();
+      const id = docSnap.id;
 
       const div = document.createElement("div");
       div.className = "msg";
@@ -147,13 +173,69 @@ window.addEventListener("DOMContentLoaded", () => {
         nameHTML = `<span class="name system">${d.name}</span>`;
       }
 
-      div.innerHTML =
-        `${nameHTML}：${d.message}`;
+      div.innerHTML = `${nameHTML}：${d.message}`;
+
+      /* ===== リアクション表示 ===== */
+
+      const reactionBox = document.createElement("div");
+      reactionBox.className = "reactions";
+
+      const reactions = d.reactions || {};
+
+      const myReaction = reactions[auth.currentUser?.uid];
+
+      const counts = {};
+
+      Object.values(reactions).forEach(r=>{
+        counts[r] = (counts[r] || 0) + 1;
+      });
+
+      emojis.forEach(e=>{
+
+        const btn = document.createElement("button");
+
+        const count = counts[e] || 0;
+
+        btn.textContent = e + " " + count;
+
+        btn.className = "reactionBtn";
+
+        if(myReaction === e){
+          btn.classList.add("myReaction");
+        }
+
+        btn.onclick = ()=>{
+          setReaction(id,e);
+        };
+
+        reactionBox.appendChild(btn);
+
+      });
+
+      div.appendChild(reactionBox);
 
       chatLog.appendChild(div);
+
     });
 
     chatLog.scrollTop = chatLog.scrollHeight;
+
   });
 
 });
+
+async function setReaction(docId, emoji){
+
+  const user = auth.currentUser;
+
+  if(!user) return;
+
+  const ref = doc(db,"chats",docId);
+
+  const field = "reactions." + user.uid;
+
+  await updateDoc(ref,{
+    [field]: emoji
+  });
+
+}

@@ -1531,3 +1531,30 @@ body{
   margin-bottom:10px;
   margin-block:0px;
 }
+
+.reactions{
+  margin-top:5px;
+}
+
+.reactionBtn{
+  border:none;
+  background:#eee;
+  padding:3px 8px;
+  margin-right:4px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+
+.reactionBtn:hover{
+    background:#ddd;
+}
+
+.myReaction{
+  background:#4a8cff;
+  color:white;
+}
+
+.myReaction:hover{
+  background:#4d81db;
+}
