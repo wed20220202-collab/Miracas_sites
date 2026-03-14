@@ -173,6 +173,35 @@ textarea{
 .page.shift{
   margin-left:90px;   /* サイドバー幅 */
 }
+
+.visitor-grid{
+  display:grid;
+  grid-template-columns:120px 70px 70px;
+  gap:6px 10px;
+  align-items:center;
+}
+
+.visitor-number{
+  width:70px;        /* ←全て同じ幅 */
+  height:28px;       /* ←高さも統一 */
+  text-align:center;
+  padding:4px;
+  box-sizing:border-box;
+}
+
+.head{
+  font-weight:bold;
+  text-align:center;
+  width:70px;
+}
+
+.Other-information{
+  width:100%;
+  padding:4px;
+  height:28px;
+  box-sizing:border-box;
+  text-align:left;
+}
 </style>
 </head>
 <header class="topbar">
@@ -344,6 +373,35 @@ textarea{
 <textarea id="e19" rows="3"></textarea>
 </div>
 
+<h3>来場者確認</h3>
+
+<div class="visitor-grid">
+
+<div></div>
+<div class="head">新規</div>
+<div class="head">リピ</div>
+<label>留学生</label>
+<input id="e33" class="visitor-number">
+<input id="i33" class="visitor-number">
+<label>３年生</label>
+<input id="e34" class="visitor-number">
+<input id="i34" class="visitor-number">
+<label>２年生</label>
+<input id="e35" class="visitor-number">
+<input id="i35" class="visitor-number">
+<label>１年生</label>
+<input id="e36" class="visitor-number">
+<input id="i36" class="visitor-number">
+<label>保護者</label>
+<input id="e37" class="visitor-number">
+<div></div>
+<label>ＡＯ面談</label>
+<input id="i37" class="visitor-number">
+<br>
+<label>その他情報</label>
+<input id="e38" class="other-information">
+<div></div>
+</div>
 
 <h3>振り返り</h3>
 

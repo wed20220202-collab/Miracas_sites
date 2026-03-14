@@ -542,3 +542,27 @@ document.getElementById("exportPDF").addEventListener("click", async ()=>{
   }
 
 });
+
+/* ===========================
+   数字入力制御
+=========================== */
+
+document.addEventListener("input", e => {
+
+  if(e.target.classList.contains("visitor-number")){
+
+    let value = e.target.value;
+
+    // 全角→半角
+    value = value.replace(/[０-９]/g, s =>
+      String.fromCharCode(s.charCodeAt(0) - 0xFEE0)
+    );
+
+    // 数字以外削除
+    value = value.replace(/[^0-9]/g,"");
+
+    e.target.value = value;
+
+  }
+
+});
