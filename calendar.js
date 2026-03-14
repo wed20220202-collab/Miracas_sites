@@ -3,7 +3,7 @@
 =========================== */
 
 const GAS_URL =
-"https://script.google.com/macros/s/AKfycbzUC3JTLPcTzeDERHkZaVbgur2YZAhuAqCCZcKem0fdufqXmqOoWvedFYX-YddpFn1mvA/exec";
+"https://script.google.com/macros/s/AKfycbxCl1IiqerMwFGBxMBQSqx329Coi1hIR1qR_jYBoi1llkSRv8dxOqdNEVuiOhx09hIhtw/exec";
 
 let currentDate = null;
 
@@ -81,7 +81,7 @@ function jsonpPost(url, data){
   
   /* すべてのデータをパラメータに追加 */
   Object.keys(data).forEach(k => {
-    const value = String(data[k] || "").trim();
+    const value = data[k] !== undefined ? String(data[k]).trim() : "";
     params.set(k, value);
   });
   
@@ -426,6 +426,10 @@ function initPlaces(){
    - レスポンスで {result:"ok"} を確認
    - 保存内容をコンソールに詳細出力
 =========================== */
+function val(id){
+  const el = document.getElementById(id);
+  return el ? el.value : "";
+}
 
 async function saveEvent(){
 
@@ -436,27 +440,14 @@ async function saveEvent(){
 
   showLoading();
 
-  const data = {
-    date: normalizeDate(currentDate)
-  };
-
-  document
-    .querySelectorAll(".event-editor input, .event-editor select, .event-editor textarea")
-    .forEach(el=>{
-      if(el.id){
-        data[el.id] = el.value;
-      }
-    });
-
   try{
 
-    const result = await jsonpPost(GAS_URL, data);
+    await savePart1();
+    await savePart2();
+    await savePart3();
+    await savePart4();
 
-    if(result && result.result === "ok"){
-      alert("保存しました");
-    }else{
-      alert("保存エラー");
-    }
+    alert("保存しました");
 
   }catch(err){
 
@@ -469,7 +460,6 @@ async function saveEvent(){
   }
 
 }
-
 
 /* ===========================
    シート作成
@@ -536,7 +526,7 @@ document.getElementById("exportPDF").addEventListener("click", async ()=>{
   const data = await res.json();
 
   if(data.url){
-    location.href = data.url;   // ←変更
+    window.open(data.url, "_blank");
   }else{
     alert("PDF生成エラー");
   }
@@ -566,3 +556,85 @@ document.addEventListener("input", e => {
   }
 
 });
+
+async function savePart1(){
+
+  const data = {
+    date: normalizeDate(currentDate),
+    d3: val("d3"),
+    e3: val("e3"),
+    f3: val("f3"),
+    g3: val("g3"),
+    j3: val("j3"),
+    k3: val("k3"),
+    g4: val("g4"),
+    h4: val("h4"),
+    i4: val("i4"),
+    j4: val("j4"),
+    k4: val("k4"),
+    e6: val("e6"),
+    d9: val("d9")  // ←追加
+  };
+
+  return jsonpPost(GAS_URL, data);
+}
+
+async function savePart2(){
+
+  const data = {
+    date: normalizeDate(currentDate),
+
+    e33: val("e33"),
+    i33: val("i33"),
+    e34: val("e34"),
+    i34: val("i34"),
+    e35: val("e35"),
+    i35: val("i35"),
+    e36: val("e36"),
+    i36: val("i36"),
+    e37: val("e37"),
+    i37: val("i37"),
+    e38: val("e38")
+  };
+
+  return jsonpPost(GAS_URL, data);
+}
+
+async function savePart3(){
+
+  const data = {
+    date: normalizeDate(currentDate),
+
+    e7: val("e7"),
+    d11: val("d11"),
+    d13: val("d13"),
+    e13: val("e13"),
+    d14: val("d14"),
+    e14: val("e14"),
+    d15: val("d15"),
+    e15: val("e15"),
+    d16: val("d16")
+  };
+
+  return jsonpPost(GAS_URL, data);
+}
+
+async function savePart4(){
+
+  const data = {
+    date: normalizeDate(currentDate),
+
+    e16: val("e16"),
+    d17: val("d17"),
+    e17: val("e17"),
+    d18: val("d18"),
+    e18: val("e18"),
+    d19: val("d19"),
+    e19: val("e19"),
+    d21: val("d21"),
+    d27: val("d27")
+  };
+
+  return jsonpPost(GAS_URL, data);
+}
+
