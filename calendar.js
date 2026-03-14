@@ -527,7 +527,7 @@ function hideLoading(){
 
 document.getElementById("exportPDF").addEventListener("click", async ()=>{
 
-  const date = currentDate; // 今開いている日付
+  const date = currentDate;
 
   const res = await fetch(
     GAS_URL + "?action=exportPDF&date=" + encodeURIComponent(date)
@@ -536,7 +536,7 @@ document.getElementById("exportPDF").addEventListener("click", async ()=>{
   const data = await res.json();
 
   if(data.url){
-    window.open(data.url, "_blank");
+    location.href = data.url;   // ←変更
   }else{
     alert("PDF生成エラー");
   }
