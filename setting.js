@@ -197,3 +197,243 @@ async function loadLoginLogs(){
         logList.appendChild(div);
     });
 }
+
+/* =========================
+   チャットリアクション設定
+========================= */
+
+const reactionSelector = document.getElementById("reactionSelector");
+const saveReactionsBtn = document.getElementById("saveReactionsBtn");
+
+// ここに実際の SVG/PNG 画像 URL を列挙
+const allEmojiImages = [
+    "icons/emoji/emoji_1.svg",
+    "icons/emoji/emoji_2.svg",
+    "icons/emoji/emoji_3.svg",
+    "icons/emoji/emoji_4.svg",
+    "icons/emoji/emoji_5.svg",
+    "icons/emoji/emoji_6.svg",
+    "icons/emoji/emoji_7.svg",
+    "icons/emoji/emoji_8.svg",
+    "icons/emoji/emoji_9.svg",
+    "icons/emoji/emoji_10.svg",
+    "icons/emoji/emoji_11.svg",
+    "icons/emoji/emoji_12.svg",
+    "icons/emoji/emoji_13.svg",
+    "icons/emoji/emoji_14.svg",
+    "icons/emoji/emoji_15.svg",
+    "icons/emoji/emoji_16.svg",
+    "icons/emoji/emoji_17.svg",
+    "icons/emoji/emoji_18.svg",
+    "icons/emoji/emoji_19.svg",
+    "icons/emoji/emoji_20.svg",
+    "icons/emoji/emoji_21.svg",
+    "icons/emoji/emoji_22.svg",
+    "icons/emoji/emoji_23.svg",
+    "icons/emoji/emoji_24.svg",
+    "icons/emoji/emoji_25.svg",
+    "icons/emoji/emoji_26.svg",
+    "icons/emoji/emoji_27.svg",
+    "icons/emoji/emoji_28.svg",
+    "icons/emoji/emoji_29.svg",
+    "icons/emoji/emoji_30.svg",
+    "icons/emoji/emoji_31.svg",
+    "icons/emoji/emoji_32.svg",
+    "icons/emoji/emoji_33.svg",
+    "icons/emoji/emoji_34.svg",
+    "icons/emoji/emoji_35.svg",
+    "icons/emoji/emoji_36.svg",
+    "icons/emoji/emoji_37.svg",
+    "icons/emoji/emoji_38.svg",
+    "icons/emoji/emoji_39.svg",
+    "icons/emoji/emoji_40.svg",
+    "icons/emoji/emoji_41.svg",
+    "icons/emoji/emoji_42.svg",
+    "icons/emoji/emoji_43.svg",
+    "icons/emoji/emoji_44.svg",
+    "icons/emoji/emoji_45.svg",
+    "icons/emoji/emoji_46.svg",
+    "icons/emoji/emoji_47.svg",
+    "icons/emoji/emoji_48.svg",
+    "icons/emoji/emoji_49.svg",
+    "icons/emoji/emoji_50.svg",
+    "icons/emoji/emoji_51.svg",
+    "icons/emoji/emoji_52.svg",
+    "icons/emoji/emoji_53.svg",
+    "icons/emoji/emoji_54.svg",
+    "icons/emoji/emoji_55.svg",
+    "icons/emoji/emoji_56.svg",
+    "icons/emoji/emoji_57.svg",
+    "icons/emoji/emoji_58.svg",
+    "icons/emoji/emoji_59.svg",
+    "icons/emoji/emoji_60.svg",
+    "icons/emoji/emoji_61.svg",
+    "icons/emoji/emoji_62.svg",
+    "icons/emoji/emoji_63.svg",
+    "icons/emoji/emoji_64.svg",
+    "icons/emoji/emoji_65.svg",
+    "icons/emoji/emoji_66.svg",
+    "icons/emoji/emoji_67.svg",
+    "icons/emoji/emoji_68.svg",
+    "icons/emoji/emoji_69.svg",
+    "icons/emoji/emoji_70.svg",
+    "icons/emoji/emoji_71.svg",
+    "icons/emoji/emoji_72.svg",
+    "icons/emoji/emoji_73.svg",
+    "icons/emoji/emoji_74.svg",
+    "icons/emoji/emoji_75.svg",
+    "icons/emoji/emoji_76.svg",
+    "icons/emoji/emoji_77.svg",
+    "icons/emoji/emoji_78.svg",
+    "icons/emoji/emoji_79.svg",
+    "icons/emoji/emoji_80.svg",
+    "icons/emoji/emoji_81.svg",
+    "icons/emoji/emoji_82.svg",
+    "icons/emoji/emoji_83.svg",
+    "icons/emoji/emoji_84.svg",
+    "icons/emoji/emoji_85.svg",
+    "icons/emoji/emoji_86.svg",
+    "icons/emoji/emoji_87.svg",
+    "icons/emoji/emoji_88.svg",
+    "icons/emoji/emoji_89.svg",
+    "icons/emoji/emoji_90.svg",
+    "icons/emoji/emoji_91.svg",
+    "icons/emoji/emoji_92.svg",
+    "icons/emoji/emoji_93.svg",
+    "icons/emoji/emoji_94.svg",
+    "icons/emoji/emoji_95.svg",
+    "icons/emoji/emoji_96.svg",
+    "icons/emoji/emoji_97.svg",
+    "icons/emoji/emoji_98.svg",
+    "icons/emoji/emoji_99.svg",
+    "icons/emoji/emoji_100.svg",
+    "icons/emoji/emoji_101.svg",
+    "icons/emoji/emoji_102.svg",
+    "icons/emoji/emoji_103.svg",
+    "icons/emoji/emoji_104.svg",
+    "icons/emoji/emoji_105.svg",
+    "icons/emoji/emoji_106.svg",
+    "icons/emoji/emoji_107.svg",
+    "icons/emoji/emoji_108.svg",
+    "icons/emoji/emoji_109.svg",
+    "icons/emoji/emoji_110.svg",
+    "icons/emoji/emoji_111.svg",
+    "icons/emoji/emoji_112.svg",
+    "icons/emoji/emoji_113.svg",
+    "icons/emoji/emoji_114.svg",
+    "icons/emoji/emoji_115.svg",
+    "icons/emoji/emoji_116.svg",
+    "icons/emoji/emoji_117.svg",
+    "icons/emoji/emoji_118.svg",
+    "icons/emoji/emoji_119.svg",
+    "icons/emoji/emoji_120.svg",
+    "icons/emoji/emoji_121.svg",
+    "icons/emoji/emoji_122.svg",
+    "icons/emoji/emoji_123.svg",
+    "icons/emoji/emoji_124.svg",
+    "icons/emoji/emoji_125.svg",
+    "icons/emoji/emoji_126.svg",
+    "icons/emoji/emoji_127.svg",
+    "icons/emoji/emoji_128.svg",
+    "icons/emoji/emoji_129.svg",
+    "icons/emoji/emoji_130.svg",
+    "icons/emoji/emoji_131.svg",
+    "icons/emoji/emoji_132.svg",
+    "icons/emoji/emoji_133.svg",
+    "icons/emoji/emoji_134.svg",
+    "icons/emoji/emoji_135.svg",
+    "icons/emoji/emoji_136.svg",
+    "icons/emoji/emoji_137.svg",
+    "icons/emoji/emoji_138.svg",
+    "icons/emoji/emoji_139.svg",
+    "icons/emoji/emoji_140.svg",
+    "icons/emoji/emoji_141.svg",
+    "icons/emoji/emoji_142.svg",
+    "icons/emoji/emoji_143.svg",
+    "icons/emoji/emoji_144.svg",
+    "icons/emoji/emoji_145.svg",
+    "icons/emoji/emoji_146.svg",
+    "icons/emoji/emoji_147.svg",
+    "icons/emoji/emoji_148.svg",
+    "icons/emoji/emoji_149.svg",
+    "icons/emoji/emoji_150.svg",
+    "icons/emoji/emoji_151.svg",
+    "icons/emoji/emoji_152.svg",
+    "icons/emoji/emoji_153.svg",
+    "icons/emoji/emoji_154.svg",
+    "icons/emoji/emoji_155.svg",
+    "icons/emoji/emoji_156.svg",
+    "icons/emoji/emoji_157.svg",
+    "icons/emoji/emoji_158.svg",
+    "icons/emoji/emoji_159.svg",
+    "icons/emoji/emoji_160.svg",
+    "icons/emoji/emoji_161.svg",
+    "icons/emoji/emoji_162.svg",
+    "icons/emoji/emoji_163.svg",
+    "icons/emoji/emoji_164.svg",
+    "icons/emoji/emoji_165.svg",
+    "icons/emoji/emoji_166.svg",
+    "icons/emoji/emoji_167.svg",
+    "icons/emoji/emoji_168.svg",
+    "icons/emoji/emoji_169.svg",
+    "icons/emoji/emoji_170.svg",
+
+    
+];
+
+// Firestore に保存するドキュメント
+const reactionRef = doc(db, "settings", "chatReactions");
+
+// 選択中の配列（最大5個）
+let selectedReactions = [];
+
+// ページ読み込み時に Firestore から設定を読み込む
+async function loadReactions() {
+    const snap = await getDoc(reactionRef);
+    if (snap.exists()) {
+        selectedReactions = snap.data().images || [];
+    }
+    renderReactionSelector();
+}
+
+// 選択UI描画
+function renderReactionSelector() {
+    if (!reactionSelector) return;
+    reactionSelector.innerHTML = "";
+
+    allEmojiImages.forEach(url => {
+        const img = document.createElement("img");
+        img.src = url;
+        img.style.width = "48px";
+        img.style.height = "48px";
+        img.style.margin = "5px";
+        img.style.cursor = "pointer";
+        img.style.border = selectedReactions.includes(url) ? "3px solid #007bff" : "1px solid #ccc";
+        img.style.borderRadius = "8px";
+
+        img.onclick = () => {
+            if (selectedReactions.includes(url)) {
+                // クリックで解除
+                selectedReactions = selectedReactions.filter(u => u !== url);
+            } else {
+                if (selectedReactions.length >= 5) {
+                    alert("最大5枚まで選択可能です");
+                    return;
+                }
+                selectedReactions.push(url);
+            }
+            renderReactionSelector();
+        };
+
+        reactionSelector.appendChild(img);
+    });
+}
+
+// 保存ボタン
+saveReactionsBtn?.addEventListener("click", async () => {
+    await setDoc(reactionRef, { images: selectedReactions });
+    alert("チャットリアクション設定を保存しました");
+});
+
+// 初期読み込み
+loadReactions();

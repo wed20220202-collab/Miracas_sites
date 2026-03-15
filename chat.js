@@ -1,15 +1,17 @@
 import { db, auth } from "./firebase.js";
-
 import {
   collection,
+  doc,
+  getDoc,
   addDoc,
   serverTimestamp,
   query,
   orderBy,
   onSnapshot,
-  doc,
   updateDoc
 } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+let emojis = []; // Firestore から取得した画像を格納
 
 async function markChatRead(){
 
@@ -157,7 +159,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
     chatLog.innerHTML = "";
 
-    const emojis = ["👍","👀","🙇","🔥","❗"];
+    const emojis = [
+      "https://example.com/emoji/thumbs_up.png",
+      "https://example.com/emoji/eyes.png",
+      "https://example.com/emoji/bow.png",
+      "https://example.com/emoji/fire.png",
+      "https://example.com/emoji/exclamation.png"
+    ];
 
     snap.forEach(docSnap => {
 
@@ -190,26 +198,36 @@ window.addEventListener("DOMContentLoaded", () => {
         counts[r] = (counts[r] || 0) + 1;
       });
 
-      emojis.forEach(e=>{
-
+      emojis.forEach(imgUrl => {
         const btn = document.createElement("button");
-
-        const count = counts[e] || 0;
-
-        btn.textContent = e + " " + count;
-
         btn.className = "reactionBtn";
 
-        if(myReaction === e){
+        // カウントは別に持つ
+        const count = counts[imgUrl] || 0;
+
+        // 画像を作成
+        const img = document.createElement("img");
+        img.src = imgUrl;
+        img.style.width = "24px";  // 好きなサイズに調整
+        img.style.height = "24px";
+        img.style.verticalAlign = "middle";
+
+        btn.appendChild(img);
+
+        // カウント表示
+        const span = document.createElement("span");
+        span.textContent = " " + count;
+        btn.appendChild(span);
+
+        if(myReaction === imgUrl){
           btn.classList.add("myReaction");
         }
 
         btn.onclick = ()=>{
-          setReaction(id,e);
+          setReaction(id,imgUrl);
         };
 
         reactionBox.appendChild(btn);
-
       });
 
       div.appendChild(reactionBox);
@@ -239,3 +257,100 @@ async function setReaction(docId, emoji){
   });
 
 }
+
+async function loadReactionImages() {
+  const ref = doc(db, "settings", "chatReactions");
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    emojis = snap.data().images || [];
+  } else {
+    // Firestore に設定がなければデフォルト
+    emojis = [
+      "icons/emoji/thumbs_up.svg",
+      "icons/emoji/eyes.svg",
+      "icons/emoji/bow.svg",
+      "icons/emoji/fire.svg",
+      "icons/emoji/exclamation.svg"
+    ];
+  }
+}
+
+window.addEventListener("DOMContentLoaded", async () => {
+
+  await loadReactionImages(); // まず画像を取得してから onSnapshot
+
+  const chatLog = document.getElementById("chatLog");
+  if (!chatLog) return;
+
+  const q = query(
+    collection(db, "chats"),
+    orderBy("time")
+  );
+
+  onSnapshot(q, (snap) => {
+
+    chatLog.innerHTML = "";
+
+    snap.forEach(docSnap => {
+
+      const d = docSnap.data();
+      const id = docSnap.id;
+
+      const div = document.createElement("div");
+      div.className = "msg";
+
+      let nameHTML = `<span class="name">${d.name}</span>`;
+      if (d.system === true) {
+        nameHTML = `<span class="name system">${d.name}</span>`;
+      }
+      div.innerHTML = `${nameHTML}：${d.message}`;
+
+      /* ===== リアクション表示 ===== */
+      const reactionBox = document.createElement("div");
+      reactionBox.className = "reactions";
+
+      const reactions = d.reactions || {};
+      const myReaction = reactions[auth.currentUser?.uid];
+
+      const counts = {};
+      Object.values(reactions).forEach(r=>{
+        counts[r] = (counts[r] || 0) + 1;
+      });
+
+      emojis.forEach(imgUrl => {
+        const btn = document.createElement("button");
+        btn.className = "reactionBtn";
+
+        const count = counts[imgUrl] || 0;
+
+        const img = document.createElement("img");
+        img.src = imgUrl;
+        img.style.width = "24px";
+        img.style.height = "24px";
+        img.style.verticalAlign = "middle";
+
+        btn.appendChild(img);
+
+        const span = document.createElement("span");
+        span.textContent = " " + count;
+        btn.appendChild(span);
+
+        if(myReaction === imgUrl){
+          btn.classList.add("myReaction");
+        }
+
+        btn.onclick = ()=>{
+          setReaction(id,imgUrl);
+        };
+
+        reactionBox.appendChild(btn);
+      });
+
+      div.appendChild(reactionBox);
+      chatLog.appendChild(div);
+    });
+
+    chatLog.scrollTop = chatLog.scrollHeight;
+  });
+
+});
