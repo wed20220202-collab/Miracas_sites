@@ -97,6 +97,10 @@ body{
     font-size:14px;
 }
 
+.chat-box{
+    width:100%;
+}
+
 .chat-layout{
     display:flex;
     flex-direction:column;
@@ -165,7 +169,7 @@ body{
 }
 
 .shortcut .card{
-    width:100%;
+    width:95%;
     height:90px;
     flex-direction:row;
     justify-content:flex-start;
@@ -289,7 +293,7 @@ body{
 
 .review-box{
   position:static;
-  width:100%;
+  width:95%;
   margin-top:12px;
 
   background:white;
