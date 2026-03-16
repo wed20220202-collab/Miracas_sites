@@ -25,6 +25,8 @@
   flex:0.7;
   min-width:350px;
   max-width:420px;
+  position: relative;
+  z-index: 10;
 }
 
 #calendar{
@@ -250,8 +252,7 @@ textarea{
     <img src="icons/arrangement.png">
   </a>
 </nav>
-<body onload="checkLogin(); displayVisitors();">
-
+<body class="captain-page" onload="checkLogin(); displayVisitors();">
 <div id="page" class="page page2 shift">
 
 <div class="event-layout">

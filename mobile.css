@@ -5,8 +5,7 @@
 
 @media (max-width: 1000px){
 
-/* ===== 全体 ===== */
-body{
+body:not(.captain-page){
     font-size:15px;
     zoom:1.8;
 }
