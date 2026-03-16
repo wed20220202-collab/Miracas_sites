@@ -8,6 +8,7 @@
 /* ===== 全体 ===== */
 body{
     font-size:15px;
+    zoom:1.8;
 }
 
 /* ===== ヘッダー ===== */
@@ -282,22 +283,38 @@ body{
     display: block;
 }
 
+.oc-frame{
+    width:100%;
 }
 
-/* ===============================
-   欠席ボックス 切り替え制御
-================================ */
+.review-box{
+  position:static;
+  width:100%;
+  margin-top:12px;
 
-/* 🔵 PC版（1001px以上） */
-@media (min-width:1001px){
+  background:white;
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
 
-  
+  height:auto;
+}
+
+.review-title{
+  font-size:15px;
+  font-weight:bold;
+  margin-bottom:10px;
+  margin-block:0px;
 }
 
 
-/* 📱 スマホ版（1000px以下） */
-@media (max-width:1000px){
+.review-boxpc,.review-titlepc{
+    display:none;
+}
+}
 
-  
-
+@media (min-width: 1000px){
+    .review-box,.review-title{
+    display:none;
+}
 }

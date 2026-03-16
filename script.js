@@ -326,22 +326,35 @@ async function loadPreviousReview(){
     const res = await fetch(url);
     const data = await res.json();
 
+    function setText(id, text){
+      const el = document.getElementById(id);
+      if(el) el.textContent = text;
+    }
+
     if(data.error){
-      document.getElementById("improveText").textContent = "データなし";
+      setText("improveText","データなし");
+      setText("improveTextSp","データなし");
       return;
     }
 
-    // データ反映
-    document.getElementById("improveText").textContent = data.review || "";
-    document.getElementById("otherText").textContent   = data.other || "";
+    // データ反映（PC）
+    setText("improveText", data.review || "");
+    setText("otherText", data.other || "");
 
-    // ここで truncate
-    truncateText("improveText", 160);
-    truncateText("otherText", 160);
+    // データ反映（SP）
+    setText("improveTextSp", data.review || "");
+    setText("otherTextSp", data.other || "");
+
+    // truncate
+    truncateText("improveText",160);
+    truncateText("otherText",160);
+    truncateText("improveTextSp",160);
+    truncateText("otherTextSp",160);
 
   }catch(e){
 
-    document.getElementById("improveText").textContent = "読み込みエラー";
+    const el = document.getElementById("improveText");
+    if(el) el.textContent = "読み込みエラー";
 
   }
 
