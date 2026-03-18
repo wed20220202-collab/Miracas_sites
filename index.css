@@ -41,6 +41,10 @@ body.login-page {
 
     box-shadow: 0 20px 45px rgba(0,0,0,0.15);
     animation: fadeIn 0.8s ease;
+
+    z-index:1100;
+
+    margin-top:-800px;
 }
 
 /* タイトル */
@@ -49,6 +53,8 @@ body.login-page {
     margin-bottom: 40px;
     letter-spacing: 1px;
     color: #2c3e50;
+
+    margin-top:0px;
 }
 
 /* =========================

@@ -5,7 +5,7 @@
 
 @media (max-width: 1000px){
 
-body:not(.captain-page.index){
+body:not(.captain-page.login-page){
     font-size:15px;
     zoom:1.8;
 }
