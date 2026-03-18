@@ -45,12 +45,6 @@ body.login-page {
     z-index:1500;
 }
 
-@media (max-width:1200px){
-    .login-box{
-        margin-top:-800px;
-    }
-}
-
 /* タイトル */
 .login-box h1 {
     font-size: 22px;
