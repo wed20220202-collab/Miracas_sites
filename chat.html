@@ -93,6 +93,15 @@
         </div>
     </section>
 
+    <!-- ===== スタンプUI ===== -->
+    <div class="stamp-container">
+
+    <button id="stampBtn" class="stamp-btn">😊</button>
+
+    <div id="stampArea"></div>
+
+    </div>
+
     <!-- ===== チャットエリア ===== -->
     <section class="chat-panel">
 
@@ -108,6 +117,8 @@
 </div>
 </div>
 
+<button id="scrollBottomBtn">↓</button>
+
 <!-- ===== メニュー開閉スクリプト ===== -->
 <script>
 function toggleMenu(){
@@ -120,7 +131,7 @@ function toggleMenu(){
 
 </script>
 <script type="module" src="chat.js"></script>
-
+<script src="stamp.js"></script>
 <script type="module" src="layout.js"></script>
 <script>
 document.addEventListener("DOMContentLoaded", ()=>{

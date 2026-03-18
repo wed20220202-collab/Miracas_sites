@@ -207,10 +207,6 @@ button.delete:hover{
     border:none;
 }
 
-.chat-input button{
-    width:100px;
-}
-
 /* ショートカット */
 .shortcut{
     margin-top:20px;
@@ -584,13 +580,6 @@ button.delete:hover{
     position:relative;  /* ← absoluteやめる */
 }
 
-/* ===== 全体 ===== */
-body{
-    font-family:"Segoe UI","Noto Sans JP",sans-serif;
-    background:#f4f6f9;
-    margin:0;
-}
-
 /* ===== ヘッダー ===== */
 .topbar{
     height:60px;
@@ -727,10 +716,6 @@ body{
     flex:1;
     padding:10px;
     border:none;
-}
-
-.chat-input button{
-    width:100px;
 }
 
 /* ===== プロフィール ===== */
@@ -879,10 +864,15 @@ body{
     flex:1;
     padding:10px;
     border:none;
+    height:57%;
 }
 
 .chat-input button{
     width:100px;
+    height:45px;
+    margin-top:-9px;
+    right:2px;
+    position:absolute;
 }
 
 /* ===== プロフィール ===== */
@@ -1560,4 +1550,102 @@ body{
 
 .myReaction:hover{
   background:#4d81db;
+}
+
+.chat-input{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  position:relative;
+  top:4px;
+}
+
+.chat-input input{
+  flex:1;
+}
+
+/* スタンプボタン */
+.stamp-btn{
+  font-size:22px;
+  background:none;
+  border:none;
+  cursor:pointer;
+  top:92.5%;
+  position:absolute;
+  z-index:10;
+  right:100px;
+}
+
+/* ポップアップ */
+.stamp-picker{
+  position:absolute;
+  bottom:60px;
+  right:110px;
+
+  display:none;
+
+  background:white;
+  padding:10px;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+
+  gap:8px;
+  flex-wrap:wrap;
+  width:260px;
+  max-height:300px;
+  overflow-y:auto;
+
+  z-index:9999;
+}
+
+.stamp-picker.show{
+  display:flex;
+}
+
+.stamp-btn:hover{
+    background:#bcbcbc;
+}
+
+/* スタンプ一覧内の画像を小さく */
+.stamp-picker img {
+  width: 32px;   /* 好きなサイズに変更 */
+  height: 32px;  /* 必要に応じて高さも調整 */
+  margin: 2px;   /* 画像同士の隙間 */
+  cursor: pointer;
+}
+
+.chat-stamp {
+  width: 32px;    /* 横幅 */
+  height: 32px;   /* 高さ */
+  vertical-align: middle; /* テキストと並んでも中央揃え */
+}
+
+#scrollBottomBtn{
+  position: fixed;
+  right: 20px;
+  bottom: 80px;
+
+  width: 45px;
+  height: 45px;
+
+  border-radius: 50%;
+  border: none;
+
+  background:#30ff30;
+  color: white;
+  font-size: 20px;
+
+  cursor: pointer;
+
+  display: none; /* 最初は非表示 */
+
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: 0.2s;
+
+  z-index:1000;
+}
+
+#scrollBottomBtn:hover{
+  transform: scale(1.1);
+  background:#3cd13c
 }
