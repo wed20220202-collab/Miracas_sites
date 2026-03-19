@@ -10,11 +10,6 @@ body:not(.captain-page){
     zoom:1.8;
 }
 
-body:not(.login-page){
-    font-size:15px;
-    zoom:1.8;
-}
-
 /* ===== ヘッダー ===== */
 .topbar{
     height:55px;
