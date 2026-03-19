@@ -3,7 +3,7 @@
 =========================== */
 
 const GAS_URL =
-"https://script.google.com/macros/s/AKfycbxCl1IiqerMwFGBxMBQSqx329Coi1hIR1qR_jYBoi1llkSRv8dxOqdNEVuiOhx09hIhtw/exec";
+"https://script.google.com/macros/s/AKfycbywFJkFL6C3W5evIxbOHif1pWwerWKZ0MEZcMdB851ER59YoGfGX4ci3NX3iy3Pu_OeEw/exec";
 
 let currentDate = null;
 
