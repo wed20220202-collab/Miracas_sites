@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>ＯＣ管理（個人ページ）</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="mobile.css">
+<link rel="icon" href="icons/Tokyo_AIfavicon.png">
+
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+
+<style>
+/* ===== OC管理UIベースのスタイル ===== */
+.event-layout {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.calendar-box {
+  flex: 0.7;
+  min-width: 350px;
+  max-width: 420px;
+  position: relative;
+  height: fit-content;
+}
+
+#calendar {
+  max-width: 400px;
+  font-size: 0.85em;
+  position: relative;
+  z-index: 10;
+}
+
+.editor-box {
+  flex: 1;
+  min-width: 450px;
+}
+
+.event-editor {
+  display: grid;
+  grid-template-columns: minmax(80px, max-content) 1fr;
+  gap: 8px 12px;
+  align-items: center;
+}
+
+.event-editor h3 {
+  grid-column: 1 / -1;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+.event-editor input,
+.event-editor select,
+.event-editor textarea {
+  padding: 4px;
+  font-size: 13px;
+}
+
+textarea {
+  resize: vertical;
+  width: 98%;
+}
+
+.date-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.small { width: 65px; }
+
+.k3, .m3 { width: 65px; }
+.AM, .PM { width: 90px; }
+
+.save-btn {
+  grid-column: 1 / -1;
+  margin-top: 20px;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 99%;
+}
+
+/* ヘッダー・サイドバー連携用 */
+.page {
+  transition: margin-left 0.3s;
+  padding: 20px;
+}
+
+.page.shift {
+  margin-left: 90px;
+}
+
+/* ローディング表示 */
+#loadingOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#loadingOverlay.active {
+  display: flex;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #ddd;
+  border-top: 6px solid #4285f4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* メールアドレス表示 */
+.email-display {
+  font-size: 14px;
+  color: #666;
+  padding: 4px 12px;
+  background: #f5f5f5;
+  border-radius: 4px;
+  font-weight: normal;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  grid-column: 1 / -1;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+</style>
+</head>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <h1>目標シート</h1>
+  </div>
+
+  <div class="topbar-right">
+    <div id="headerClock" class="header-clock"></div>
+    <div class="profile">
+      <button id="profileBtn" class="profile-btn">👤</button>
+      <div id="profileMenu" class="profile-menu">
+        <div class="profile-name" id="profileName"></div>
+        <hr>
+        <button id="logoutBtn" class="logout-btn">ログアウト</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav id="sidebar" class="sidebar open">
+  <a href="home.html" title="家"><img src="icons/home.png"></a>
+  <a href="list.html" title="座席表管理"><img src="icons/char.png"></a>
+  <a href="chat.html" title="チャット"><img id="chatIcon" src="icons/chat.png"></a>
+  <a href="manage.html" title="当日名簿"><img src="icons/Registrant_list.png"></a>
+  <a href="arrangement.html" title="配置図"><img src="icons/arrangement.png"></a>
+</nav>
+
+<body class="captain-page">
+
+<div id="page" class="page shift">
+
+  <div class="event-layout">
+
+    <!-- カレンダー -->
+    <div class="calendar-box">
+      <h2>ＯＣカレンダー</h2>
+      <div id="calendar"></div>
+      <button onclick="createSheet()" class="save-btn">新規ＯＣ記録作成</button>
+    </div>
+
+    <!-- 編集エリア -->
+    <div class="editor-box">
+      <div class="event-editor">
+        
+        <div class="editor-header">
+          <h2>目標編集</h2>
+          <div class="email-display" id="emailDisplay"></div>
+        </div>
+
+        <!-- 日付 -->
+        <label>日付</label>
+        <div class="date-row">
+          <select id="d3" class="small"></select>年
+          <select id="e3" class="small"></select>月
+          <select id="g3" class="small"></select>日
+          <label style="margin-left:10px">OC前</label>
+          <input id="k3" class="k3">
+          <label style="margin-left:10px">OC後</label>
+          <input id="m3" class="m3">
+        </div>
+
+        <!-- 個人目標 -->
+        <label>個人目標</label>
+        <input id="e5">
+
+        <label>定量目標</label>
+        <input id="e6">
+
+        <label>定性目標</label>
+        <input id="e7">
+
+        <label>具体的行動</label>
+        <input id="j6">
+
+        <!-- 本日の役割 -->
+        <h3>本日の役割</h3>
+        <label>AM</label>
+        <input id="f8" class="AM">
+        <label>PM</label>
+        <input id="j8" class="PM">
+
+        <!-- 振り返り -->
+        <h3>振り返り</h3>
+        <label>個人</label>
+        <textarea id="e11" rows="4"></textarea>
+
+        <label>全体</label>
+        <textarea id="e12" rows="4"></textarea>
+
+        <label>アドバイス</label>
+        <textarea id="e13" rows="4"></textarea>
+
+        <button class="save-btn" onclick="saveEvent()">保存</button>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ローディング表示 -->
+<div id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<script type="module" src="mypage.js"></script>
+<script type="module" src="layout.js"></script>
+
+<script>
+/* メニュー開閉用（グローバル） */
+window.toggleMenu = function(){
+    const sidebar = document.getElementById("sidebar");
+    const page = document.getElementById("page");
+    sidebar.classList.toggle("close");
+    page.classList.toggle("shift");
+};
+</script>
+
+</body>
+</html>
