@@ -146,6 +146,18 @@ textarea {
   border-bottom: 2px solid #eee;
   padding-bottom: 10px;
 }
+
+.pdfjs-viewer {
+    width: 420px;
+    height: 500px;
+    border: none;
+}
+
+.reveal_is-inview{
+  position:absolute;
+  margin-top:-59%;
+  right:100px;
+}
 </style>
 </head>
 
@@ -204,11 +216,11 @@ textarea {
           <select id="d3" class="small"></select>年
           <select id="e3" class="small"></select>月
           <select id="g3" class="small"></select>日
-          <label style="margin-left:10px">OC前</label>
-          <input id="k3" class="k3">
-          <label style="margin-left:10px">OC後</label>
-          <input id="m3" class="m3">
         </div>
+        <label style="margin-left:10px">OC前</label>
+        <input id="k3" class="k3">
+        <label style="margin-left:10px">OC後</label>
+        <input id="m3" class="m3">
 
         <!-- 個人目標 -->
         <label>個人目標</label>
@@ -230,6 +242,7 @@ textarea {
         <label>PM</label>
         <input id="j8" class="PM">
 
+        <br><br><br><br><br>
         <!-- 振り返り -->
         <h3>振り返り</h3>
         <label>個人</label>
@@ -244,6 +257,9 @@ textarea {
         <button class="save-btn" onclick="saveEvent()">保存</button>
 
       </div>
+        <li class="reveal_is-inview">
+            <embed src="Miracas.pdf" class="pdfjs-viewer">
+        </li>
     </div>
   </div>
 
