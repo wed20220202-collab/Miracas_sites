@@ -187,7 +187,7 @@ button.delete:hover{
     display:flex;
     flex-direction:column;
     width:85%;
-    max-height:370px;
+    max-height:410px;
 }
 
 .chat-log{
@@ -1451,6 +1451,7 @@ button.delete:hover{
   border-radius:12px;
   box-shadow:0 4px 10px rgba(0,0,0,0.08);
   width:240px;
+  max-height:200px;
 }
 
 .sheet-row{
@@ -1474,6 +1475,8 @@ button.delete:hover{
   font-weight:bold;
   color:#222;
   font-size:12px;
+  max-height:33.6px;
+  max-width:200px;
 }
 
 .sheet-edit{
@@ -1688,3 +1691,4 @@ button.delete:hover{
   color: gray;
   text-align: right;
 }
+
