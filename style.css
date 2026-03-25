@@ -1649,3 +1649,42 @@ button.delete:hover{
   transform: scale(1.1);
   background:#3cd13c
 }
+
+.ai-textarea-wrap{
+  position: relative;
+  width: 100%;
+}
+
+.ai-textarea-wrap textarea{
+  width: 100%;
+  padding-right: 40px; /* ←ボタン分の余白 */
+  box-sizing: border-box;
+}
+
+.ai-btn{
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+
+  opacity: 0.7;
+}
+
+.ai-btn:hover{
+  opacity: 1;
+}
+
+.msg {
+  margin-bottom: 10px;
+}
+
+.msg-time {
+  font-size: 11px;
+  color: gray;
+  text-align: right;
+}

@@ -40,7 +40,7 @@ const adminEmails = [
 /* ===============================
    セッション制限（3時間）
 ================================ */
-const SESSION_LIMIT = 3 * 60 * 60 * 1000; // 3時間
+const SESSION_LIMIT = 5 * 60 * 60 * 1000; // 3時間
 
 function isSessionExpired() {
   const loginTime = localStorage.getItem("loginTime");

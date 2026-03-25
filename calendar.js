@@ -5,6 +5,8 @@
 const GAS_URL =
 "https://script.google.com/macros/s/AKfycbywFJkFL6C3W5evIxbOHif1pWwerWKZ0MEZcMdB851ER59YoGfGX4ci3NX3iy3Pu_OeEw/exec";
 
+const AI_GAS_URL = "https://script.google.com/macros/s/AKfycbxax53vnWZ6uttKdNY1m-deTyDjJNvzePEgPXYNojLYtDDR6DWoqR9VVu9h4GMhsDw4/exec";
+
 let currentDate = null;
 
 
@@ -638,3 +640,63 @@ async function savePart4(){
   return jsonpPost(GAS_URL, data);
 }
 
+async function generateSummary(){
+
+  const texts = [
+    val("e13"), val("e14"), val("e15"),
+    val("e16"), val("e17"), val("e18"), val("e19"),
+    val("d21")
+  ];
+
+  const joined = texts.filter(t => t).join("\n");
+
+  if(!joined){
+    alert("内容がありません");
+    return;
+  }
+
+  showLoading();
+
+  try{
+
+    const data = await jsonpAI(joined);
+
+    if(data.error){
+      throw new Error(data.error);
+    }
+
+    document.getElementById("d27").value =
+      data.summary || "要約に失敗しました";
+
+  }catch(err){
+
+    alert("AI要約エラー\n" + err);
+
+  }finally{
+
+    hideLoading();
+
+  }
+
+}
+
+function jsonpAI(text){
+  return new Promise((resolve, reject)=>{
+
+    const cb = "cb_" + Date.now();
+
+    window[cb] = data=>{
+      delete window[cb];
+      script.remove();
+      resolve(data);
+    };
+
+    const script = document.createElement("script");
+    script.src = AI_GAS_URL + "?text=" + encodeURIComponent(text) + "&callback=" + cb;
+
+    script.onerror = ()=>reject("通信エラー");
+
+    document.body.appendChild(script);
+
+  });
+}

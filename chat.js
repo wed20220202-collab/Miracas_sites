@@ -239,8 +239,15 @@ window.addEventListener("DOMContentLoaded", async () => {
       if (d.system === true) {
         nameHTML = `<span class="name system">${d.name}</span>`;
       }
+      
+      const timeText = formatTime(d.time);
 
-      div.innerHTML = `${nameHTML}：${d.message}`;
+      div.innerHTML = `
+        <div class="msg-main">
+          ${nameHTML}：${d.message}
+        </div>
+        <div class="msg-time">${timeText}</div>
+      `;
 
       if (!d.isStamp) {
         const reactionBox = document.createElement("div");
@@ -293,6 +300,17 @@ window.addEventListener("DOMContentLoaded", async () => {
       scrollBtn.style.display = "block";
     }
 
+    function formatTime(timestamp){
+      if(!timestamp) return "";
+      
+      const date = timestamp.toDate();
+      
+      const h = date.getHours().toString().padStart(2, "0");
+      const m = date.getMinutes().toString().padStart(2, "0");
+      
+      return `${h}:${m}`;
+      }
   });
+
 
 });
