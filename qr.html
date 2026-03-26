@@ -1,20 +1,515 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<title>参加ページ</title>
-<link rel="stylesheet" href="qr.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎯 抽選参加</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================
+       Glass-morphism × Dark Mode Design System
+       ============================================ */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'IBM Plex Mono', monospace;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+    }
+
+    /* ============================================
+       Main Container
+       ============================================ */
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      padding: 2rem;
+    }
+
+    /* ============================================
+       Card Panel
+       ============================================ */
+
+    .card {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 2rem;
+      padding: 3rem 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      animation: slideUp 0.6s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============================================
+       Header
+       ============================================ */
+
+    .card-header {
+      margin-bottom: 2rem;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title h1 {
+      font-size: 2rem;
+      color: #ffffff;
+      text-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    }
+
+    .sparkle {
+      font-size: 1.8rem;
+      animation: sparkle 2s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
+    }
+
+    .card-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    /* ============================================
+       Content Section
+       ============================================ */
+
+    .card-content {
+      margin-bottom: 2rem;
+    }
+
+    .label {
+      display: block;
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .number-display {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
+      border: 2px solid rgba(6, 182, 212, 0.5);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .number-display:hover {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.3) 0%, rgba(59, 130, 246, 0.3) 100%);
+      border-color: rgba(6, 182, 212, 0.8);
+      box-shadow: 0 8px 24px rgba(6, 182, 212, 0.2);
+    }
+
+    .number-value {
+      font-size: 4rem;
+      font-weight: 700;
+      color: #06B6D4;
+      text-shadow: 0 4px 12px rgba(6, 182, 212, 0.5);
+      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: 2px;
+    }
+
+    .number-placeholder {
+      font-size: 2rem;
+      color: rgba(6, 182, 212, 0.5);
+      font-weight: 300;
+    }
+
+    /* ============================================
+       Button
+       ============================================ */
+
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+    }
+
+    button {
+      padding: 1rem;
+      background: linear-gradient(135deg, #06B6D4 0%, #0891b2 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 0.75rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+    }
+
+    button:hover {
+      box-shadow: 0 8px 28px rgba(6, 182, 212, 0.6);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .button-secondary {
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid rgba(6, 182, 212, 0.5);
+      color: #06B6D4;
+      box-shadow: none;
+    }
+
+    .button-secondary:hover {
+      background: rgba(6, 182, 212, 0.3);
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    }
+
+    /* ============================================
+       Status Message
+       ============================================ */
+
+    .status-message {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      font-size: 0.9rem;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .status-message.show {
+      display: block;
+    }
+
+    .status-success {
+      background: rgba(107, 203, 119, 0.2);
+      border: 1px solid rgba(107, 203, 119, 0.5);
+      color: #6BCB77;
+    }
+
+    .status-info {
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid rgba(6, 182, 212, 0.5);
+      color: #06B6D4;
+    }
+
+    /* ============================================
+       Footer
+       ============================================ */
+
+    .card-footer {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.85rem;
+    }
+
+    .footer-text {
+      line-height: 1.6;
+    }
+
+    /* ============================================
+       Loading Spinner
+       ============================================ */
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(6, 182, 212, 0.3);
+      border-top-color: #06B6D4;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ============================================
+       Responsive Design
+       ============================================ */
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .card {
+        padding: 2rem 1.5rem;
+        border-radius: 1.5rem;
+      }
+
+      .card-title h1 {
+        font-size: 1.5rem;
+      }
+
+      .number-value {
+        font-size: 3rem;
+      }
+
+      .number-display {
+        min-height: 100px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 1.5rem 1rem;
+      }
+
+      .card-title h1 {
+        font-size: 1.3rem;
+      }
+
+      .number-value {
+        font-size: 2.5rem;
+      }
+
+      button {
+        font-size: 0.95rem;
+        padding: 0.9rem;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <div class="card">
+      <!-- Header -->
+      <div class="card-header">
+        <div class="card-title">
+          <span class="sparkle">🎯</span>
+          <h1>抽選参加</h1>
+          <span class="sparkle">🎯</span>
+        </div>
+        <p class="card-subtitle">あなたの番号を取得</p>
+      </div>
 
-<div class="box">
-  <h1>🎯 抽選参加</h1>
-  <p>あなたの番号</p>
-  <div id="number">---</div>
-  <button onclick="join()">参加する</button>
-</div>
+      <!-- Content -->
+      <div class="card-content">
+        <label class="label">あなたの番号</label>
+        <div class="number-display">
+          <div id="number" class="number-placeholder">---</div>
+        </div>
+      </div>
 
-<script type="module" src="qr.js"></script>
-<script type="module" src="firebase.js"></script>
+      <!-- Buttons -->
+      <div class="button-group">
+        <button id="joinBtn" onclick="join()">🎡 参加する</button>
+        <button id="copyBtn" class="button-secondary" onclick="copyNumber()" style="display: none;">📋 番号をコピー</button>
+      </div>
+
+      <!-- Status Message -->
+      <div id="statusMessage" class="status-message"></div>
+
+      <!-- Footer -->
+      <div class="card-footer">
+        <p class="footer-text">✨ ルーレット抽選に参加して、素敵な景品をゲットしよう！ ✨</p>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    /* ============================================
+       Firebase Setup
+       ============================================ */
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIQhHuF3we247IxmhrO3j-Gmr5RFYf-q4",
+      authDomain: "chat-sites.firebaseapp.com",
+      databaseURL: "https://chat-sites-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "chat-sites",
+      storageBucket: "chat-sites.firebasestorage.app",
+      messagingSenderId: "36894057874",
+      appId: "1:36894057874:web:2ae9634f2b1d1081a90d4b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    /* ============================================
+       UID Management
+       ============================================ */
+
+    function getUID() {
+      let uid = localStorage.getItem("uid");
+      if (!uid) {
+        uid = crypto.randomUUID();
+        localStorage.setItem("uid", uid);
+      }
+      return uid;
+    }
+
+    /* ============================================
+       UI Functions
+       ============================================ */
+
+    function showStatus(message, type = 'info') {
+      const statusEl = document.getElementById('statusMessage');
+      statusEl.textContent = message;
+      statusEl.className = `status-message show status-${type}`;
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          statusEl.classList.remove('show');
+        }, 3000);
+      }
+    }
+
+    function updateNumberDisplay(number) {
+      const numberEl = document.getElementById('number');
+      numberEl.textContent = number;
+      numberEl.classList.remove('number-placeholder');
+      numberEl.classList.add('number-value');
+      
+      // Show copy button
+      document.getElementById('copyBtn').style.display = 'block';
+      document.getElementById('joinBtn').style.display = 'none';
+    }
+
+    window.copyNumber = function() {
+      const number = document.getElementById('number').textContent;
+      if (number !== '---') {
+        navigator.clipboard.writeText(number).then(() => {
+          showStatus('✓ 番号をコピーしました！', 'success');
+        }).catch(() => {
+          showStatus('コピーに失敗しました', 'info');
+        });
+      }
+    };
+
+    /* ============================================
+       Join Function
+       ============================================ */
+
+    window.join = async function() {
+      const joinBtn = document.getElementById('joinBtn');
+      const originalText = joinBtn.textContent;
+      
+      try {
+        // Show loading state
+        joinBtn.disabled = true;
+        joinBtn.innerHTML = '<span class="spinner"></span>処理中...';
+
+        const uid = getUID();
+        const ref = doc(db, "users", uid);
+        const snap = await getDoc(ref);
+
+        // Already has a number
+        if (snap.exists()) {
+          updateNumberDisplay(snap.data().number);
+          showStatus('✓ 既に参加済みです', 'success');
+          return;
+        }
+
+        // Generate random number
+        const all = await getDocs(collection(db, "users"));
+        const used = all.docs.map(d => d.data().number);
+
+        let num;
+        do {
+          num = Math.floor(Math.random() * 9000) + 1000;
+        } while (used.includes(num));
+
+        // Save to Firebase
+        await setDoc(ref, {
+          number: num,
+          created: new Date()
+        });
+
+        updateNumberDisplay(num);
+        showStatus('🎉 参加完了！あなたの番号は ' + num + ' です', 'success');
+
+      } catch (error) {
+        console.error('Error:', error);
+        showStatus('エラーが発生しました。もう一度お試しください。', 'info');
+        joinBtn.disabled = false;
+        joinBtn.textContent = originalText;
+      }
+    };
+
+    /* ============================================
+       Initialize
+       ============================================ */
+
+    window.addEventListener('load', async () => {
+      try {
+        const uid = getUID();
+        const ref = doc(db, "users", uid);
+        const snap = await getDoc(ref);
+
+        if (snap.exists()) {
+          updateNumberDisplay(snap.data().number);
+          showStatus('✓ 前回の番号を復元しました', 'info');
+        }
+      } catch (error) {
+        console.error('Initialization error:', error);
+      }
+    });
+  </script>
 </body>
 </html>
