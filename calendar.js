@@ -5,7 +5,7 @@
 const GAS_URL =
 "https://script.google.com/macros/s/AKfycbywFJkFL6C3W5evIxbOHif1pWwerWKZ0MEZcMdB851ER59YoGfGX4ci3NX3iy3Pu_OeEw/exec";
 
-const AI_GAS_URL = "https://script.google.com/macros/s/AKfycbxax53vnWZ6uttKdNY1m-deTyDjJNvzePEgPXYNojLYtDDR6DWoqR9VVu9h4GMhsDw4/exec";
+const AI_URL = "https://winter-forest-a82b.tokyo-ai-it-miracas.workers.dev";
 
 let currentDate = null;
 
@@ -640,6 +640,10 @@ async function savePart4(){
   return jsonpPost(GAS_URL, data);
 }
 
+function val(id){
+  return document.getElementById(id)?.value || "";
+}
+
 async function generateSummary(){
 
   const texts = [
@@ -650,6 +654,8 @@ async function generateSummary(){
 
   const joined = texts.filter(t => t).join("\n");
 
+  console.log("送信内容:", joined);
+
   if(!joined){
     alert("内容がありません");
     return;
@@ -659,44 +665,32 @@ async function generateSummary(){
 
   try{
 
-    const data = await jsonpAI(joined);
+    const res = await fetch(AI_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        text: joined
+      })
+    });
+
+    const data = await res.json();
 
     if(data.error){
       throw new Error(data.error);
     }
 
     document.getElementById("d27").value =
-      data.summary || "要約に失敗しました";
+      data.result || "要約に失敗しました";
 
   }catch(err){
 
-    alert("AI要約エラー\n" + err);
+    alert("AI要約エラー\n" + err.message);
 
   }finally{
 
     hideLoading();
 
   }
-
-}
-
-function jsonpAI(text){
-  return new Promise((resolve, reject)=>{
-
-    const cb = "cb_" + Date.now();
-
-    window[cb] = data=>{
-      delete window[cb];
-      script.remove();
-      resolve(data);
-    };
-
-    const script = document.createElement("script");
-    script.src = AI_GAS_URL + "?text=" + encodeURIComponent(text) + "&callback=" + cb;
-
-    script.onerror = ()=>reject("通信エラー");
-
-    document.body.appendChild(script);
-
-  });
 }
