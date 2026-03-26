@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🎡 プレミアム抽選ルーレット</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================
+       Glass-morphism × Dark Mode Design System
+       ============================================ */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'IBM Plex Mono', monospace;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: #ffffff;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+    }
+
+    /* ============================================
+       Main Layout
+       ============================================ */
+
+    .main-container {
+      display: flex;
+      min-height: 100vh;
+      gap: 2rem;
+      padding: 2rem;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .center-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .right-panel {
+      width: 350px;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    /* ============================================
+       Header
+       ============================================ */
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      width: 100%;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-title h1 {
+      font-size: 2.5rem;
+      color: #ffffff;
+      text-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+    }
+
+    .sparkle {
+      font-size: 2rem;
+      animation: sparkle 2s ease-in-out infinite;
+    }
+
+    @keyframes sparkle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
+    }
+
+    .header-subtitle {
+      color: #06B6D4;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* ============================================
+       Wheels Container
+       ============================================ */
+
+    .wheels-container {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .wheel-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .wheel-panel {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .wheel-panel:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(6, 182, 212, 0.5);
+      box-shadow: 0 12px 40px rgba(6, 182, 212, 0.2);
+    }
+
+    canvas {
+      border-radius: 1rem;
+      display: block;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .wheel-label {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-top: 1rem;
+    }
+
+    /* ============================================
+       Control Panel (Right Side)
+       ============================================ */
+
+    .control-panel {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      height: fit-content;
+      position: sticky;
+      top: 2rem;
+    }
+
+    .control-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .control-section:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      color: #ffffff;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 200px;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 0.75rem;
+      color: #ffffff;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+      resize: vertical;
+    }
+
+    textarea::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    textarea:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.15);
+      border-color: #06B6D4;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.3);
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #06B6D4 0%, #0891b2 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 0.75rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+    }
+
+    button:hover {
+      box-shadow: 0 8px 28px rgba(6, 182, 212, 0.6);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .prize-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .prize-tag {
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid rgba(6, 182, 212, 0.5);
+      color: #06B6D4;
+      padding: 0.4rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* ============================================
+       Modal Popup
+       ============================================ */
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal-content {
+      backdrop-filter: blur(10px);
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
+      border: 2px solid rgba(6, 182, 212, 0.8);
+      border-radius: 2rem;
+      padding: 3rem;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(6, 182, 212, 0.4);
+      animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .result-label {
+      color: rgba(255, 255, 255, 0.8);
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .result-item {
+      text-align: center;
+    }
+
+    .result-item-label {
+      color: #06B6D4;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .result-item-value {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #ffffff;
+      word-break: break-word;
+      text-shadow: 0 4px 12px rgba(6, 182, 212, 0.5);
+    }
+
+    .modal-close-btn {
+      padding: 0.75rem 2rem;
+      background: rgba(6, 182, 212, 0.3);
+      border: 1px solid rgba(6, 182, 212, 0.8);
+      color: #06B6D4;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+    }
+
+    .modal-close-btn:hover {
+      background: rgba(6, 182, 212, 0.5);
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
+    }
+
+    /* ============================================
+       Confetti Animation
+       ============================================ */
+
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* ============================================
+       Responsive Design
+       ============================================ */
+
+    @media (max-width: 1024px) {
+      .main-container {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .right-panel {
+        width: 100%;
+        flex-direction: row;
+        gap: 1rem;
+      }
+
+      .control-panel {
+        flex: 1;
+        position: static;
+      }
+
+      .wheels-container {
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .header-title h1 {
+        font-size: 1.8rem;
+      }
+
+      .result-item-value {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 0.5rem;
+      }
+
+      .right-panel {
+        flex-direction: column;
+      }
+
+      .control-panel {
+        padding: 1rem;
+      }
+
+      textarea {
+        min-height: 120px;
+      }
+
+      .modal-content {
+        padding: 2rem;
+      }
+
+      .result-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <!-- Center Content -->
+    <div class="center-content">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-title">
+          <span class="sparkle">✨</span>
+          <h1>プレミアム抽選ルーレット</h1>
+          <span class="sparkle">✨</span>
+        </div>
+        <p class="header-subtitle">Glass-morphism Design × Firebase</p>
+      </div>
+
+      <!-- Wheels -->
+      <div class="wheels-container">
+        <div class="wheel-wrapper">
+          <div class="wheel-panel">
+            <canvas id="wheelLeft" width="400" height="400"></canvas>
+          </div>
+          <p class="wheel-label">番号ルーレット</p>
+        </div>
+
+        <div class="wheel-wrapper">
+          <div class="wheel-panel">
+            <canvas id="wheelRight" width="400" height="400"></canvas>
+          </div>
+          <p class="wheel-label">景品ルーレット</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <!-- Control Panel -->
+      <div class="control-panel">
+        <div class="control-section">
+          <label for="prizeTextarea">景品を設定（1行1つ）</label>
+          <textarea
+            id="prizeTextarea"
+            placeholder="選択肢 1&#10;選択肢 2&#10;選択肢 3&#10;選択肢 4&#10;選択肢 5&#10;選択肢 6"
+          >選択肢 1
+選択肢 2
+選択肢 3
+選択肢 4
+選択肢 5
+選択肢 6</textarea>
+          <div class="prize-tags" id="prizeTags"></div>
+        </div>
+
+        <div class="control-section">
+          <button onclick="spin()">🎡 回す！</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Popup -->
+  <div class="modal-overlay" id="resultModal">
+    <div class="modal-content">
+      <div class="result-label">🎉 抽選結果 🎉</div>
+      <div class="result-grid">
+        <div class="result-item">
+          <div class="result-item-label">当選番号</div>
+          <div class="result-item-value" id="resultNumber">-</div>
+        </div>
+        <div class="result-item">
+          <div class="result-item-label">景品</div>
+          <div class="result-item-value" id="resultPrize">-</div>
+        </div>
+      </div>
+      <button class="modal-close-btn" onclick="closeModal()">閉じる</button>
+    </div>
+  </div>
+
+  <script type="module">
+    /* ============================================
+       Firebase Setup
+       ============================================ */
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCIQhHuF3we247IxmhrO3j-Gmr5RFYf-q4",
+      authDomain: "chat-sites.firebaseapp.com",
+      databaseURL: "https://chat-sites-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "chat-sites",
+      storageBucket: "chat-sites.firebasestorage.app",
+      messagingSenderId: "36894057874",
+      appId: "1:36894057874:web:2ae9634f2b1d1081a90d4b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    /* ============================================
+       Glass-morphism × Dark Mode Roulette
+       ============================================ */
+
+    const leftCanvas = document.getElementById("wheelLeft");
+    const rightCanvas = document.getElementById("wheelRight");
+    const leftCtx = leftCanvas.getContext("2d");
+    const rightCtx = rightCanvas.getContext("2d");
+
+    let numbers = [];
+    let prizes = [];
+
+    let leftRotation = 0;
+    let rightRotation = 0;
+    let spinningLeft = false;
+    let spinningRight = false;
+
+    // Firebase から番号を取得
+    onSnapshot(collection(db, "users"), (snap) => {
+      numbers = snap.docs.map(d => d.data().number || "");
+      if (numbers.length > 0) {
+        drawWheel(leftCtx, numbers, leftRotation);
+      }
+    });
+
+    function drawWheel(ctx, items, rotation) {
+      const size = 400;
+      const center = size / 2;
+      const radius = 180;
+
+      ctx.clearRect(0, 0, size, size);
+      if (items.length === 0) return;
+
+      const arc = (2 * Math.PI) / items.length;
+
+      items.forEach((item, i) => {
+        const angle = i * arc + rotation;
+
+        // Draw segment with gradient
+        const gradient = ctx.createLinearGradient(
+          center + Math.cos(angle) * radius,
+          center + Math.sin(angle) * radius,
+          center + Math.cos(angle + arc) * radius,
+          center + Math.sin(angle + arc) * radius
+        );
+        const hue = i * (360 / items.length);
+        gradient.addColorStop(0, `hsl(${hue}, 70%, 55%)`);
+        gradient.addColorStop(1, `hsl(${hue}, 70%, 45%)`);
+
+        ctx.beginPath();
+        ctx.moveTo(center, center);
+        ctx.arc(center, center, radius, angle, angle + arc);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+
+        // Draw border
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Draw text with shadow - 常に正面向き（水平）
+        // テキストの位置（セグメント中央）
+        const textRadius = (radius + 80) / 2;
+        const textX = center + Math.cos(angle + arc / 2) * textRadius;
+        const textY = center + Math.sin(angle + arc / 2) * textRadius;
+
+        // Text shadow
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        ctx.font = "bold 15px 'Space Grotesk', sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(item, textX, textY + 2);
+
+        // Main text
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(item, textX, textY);
+      });
+
+      // Draw center circle with glow
+      ctx.shadowColor = "rgba(6, 182, 212, 0.5)";
+      ctx.shadowBlur = 20;
+      ctx.beginPath();
+      ctx.arc(center, center, 20, 0, 2 * Math.PI);
+      ctx.fillStyle = "#06B6D4";
+      ctx.fill();
+      ctx.shadowColor = "transparent";
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Draw pointer (top) with glow - 上に配置、下向き
+      ctx.shadowColor = "rgba(6, 182, 212, 0.6)";
+      ctx.shadowBlur = 15;
+      ctx.fillStyle = "#06B6D4";
+      ctx.beginPath();
+      ctx.moveTo(center, 30);
+      ctx.lineTo(center - 15, 0);
+      ctx.lineTo(center + 15, 0);
+      ctx.fill();
+      ctx.shadowColor = "transparent";
+    }
+
+    function spinWheel(ctx, items, isLeft) {
+      return new Promise(resolve => {
+        let speed = Math.random() * 0.3 + 0.4;
+        let rotation = 0;
+
+        function animate() {
+          speed *= 0.97;
+          rotation += speed;
+
+          if (isLeft) {
+            leftRotation = rotation;
+            drawWheel(leftCtx, items, leftRotation);
+          } else {
+            rightRotation = rotation;
+            drawWheel(rightCtx, items, rightRotation);
+          }
+
+          if (speed > 0.002) {
+            requestAnimationFrame(animate);
+          } else {
+            // ポインター位置は上（-π/2）
+            const arc = (2 * Math.PI) / items.length;
+            const normalizedRotation = rotation % (2 * Math.PI);
+            
+            // ポインターが指す角度を計算（上が0度）
+            const pointerAngle = -Math.PI / 2; // 上（-90度）
+            const adjustedAngle = (pointerAngle - normalizedRotation + 2 * Math.PI) % (2 * Math.PI);
+            
+            // セグメントのインデックスを計算
+            let index = Math.floor(adjustedAngle / arc);
+            
+            // インデックスが範囲外の場合は調整
+            if (index >= items.length) {
+              index = items.length - 1;
+            }
+            if (index < 0) {
+              index = 0;
+            }
+            
+            const result = items[index];
+            resolve(result);
+          }
+        }
+
+        animate();
+      });
+    }
+
+    function updatePrizesFromTextarea() {
+      const textarea = document.getElementById("prizeTextarea");
+      prizes = textarea.value
+        .split("\n")
+        .map(v => v.trim())
+        .filter(v => v);
+      
+      if (prizes.length > 0) {
+        drawWheel(rightCtx, prizes, rightRotation);
+        updatePrizeTags();
+      }
+    }
+
+    // テキストエリアの入力を監視
+    document.getElementById("prizeTextarea").addEventListener("input", updatePrizesFromTextarea);
+
+    // 初期化時に景品を読み込む
+    window.addEventListener("load", () => {
+      updatePrizesFromTextarea();
+    });
+
+    function updatePrizeTags() {
+      const container = document.getElementById("prizeTags");
+      container.innerHTML = prizes.map(prize => 
+        `<span class="prize-tag">${prize}</span>`
+      ).join("");
+    }
+
+    /* ============================================
+       Confetti Animation
+       ============================================ */
+
+    function createConfetti() {
+      const colors = ['#06B6D4', '#0891b2', '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF'];
+      const confettiCount = 50;
+
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.top = '-10px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.opacity = Math.random();
+        document.body.appendChild(confetti);
+
+        const duration = Math.random() * 2 + 2;
+        const xMove = (Math.random() - 0.5) * 200;
+        const rotation = Math.random() * 720;
+
+        confetti.animate([
+          {
+            transform: `translateY(0) translateX(0) rotate(0deg)`,
+            opacity: 1
+          },
+          {
+            transform: `translateY(${window.innerHeight + 20}px) translateX(${xMove}px) rotate(${rotation}deg)`,
+            opacity: 0
+          }
+        ], {
+          duration: duration * 1000,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        });
+
+        setTimeout(() => confetti.remove(), duration * 1000);
+      }
+    }
+
+    window.spin = async function() {
+      if (numbers.length === 0) {
+        alert("番号がまだ読み込まれていません");
+        return;
+      }
+      
+      if (prizes.length === 0) {
+        alert("景品を入力してください");
+        return;
+      }
+
+      spinningLeft = true;
+      spinningRight = true;
+
+      const num = await spinWheel(leftCtx, numbers, true);
+      await new Promise(r => setTimeout(r, 500));
+      const prize = await spinWheel(rightCtx, prizes, false);
+
+      spinningLeft = false;
+      spinningRight = false;
+
+      // Display result in modal
+      document.getElementById("resultNumber").textContent = num;
+      document.getElementById("resultPrize").textContent = prize;
+      document.getElementById("resultModal").classList.add("active");
+
+      // Create confetti
+      createConfetti();
+    };
+
+    window.closeModal = function() {
+      document.getElementById("resultModal").classList.remove("active");
+    };
+
+    // Close modal when clicking outside
+    document.getElementById("resultModal").addEventListener("click", function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // Initialize wheels on load
+    window.addEventListener("load", () => {
+      if (numbers.length > 0) {
+        drawWheel(leftCtx, numbers, leftRotation);
+      }
+    });
+  </script>
+</body>
+</html>
