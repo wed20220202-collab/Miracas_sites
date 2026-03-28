@@ -52,6 +52,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const lockChat = document.getElementById("lockChat");
   const lockArrangement = document.getElementById("lockArrangement");
   const lockCaptain = document.getElementById("lockCaptain");
+  const lockRoulette = document.getElementById("lockRoulette");
   const saveLockBtn = document.getElementById("saveLockBtn");
 
   const lockRef = doc(db,"settings","siteLocks");
@@ -78,6 +79,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       lockChat.checked = data.chat || false;
       lockArrangement.checked = data.arrangement || false;
       lockCaptain.checked = data.captain || false;
+      lockRoulette.checked = data.roulette || false;
   }
 
   /* ===== ページロック保存 ===== */
@@ -89,7 +91,8 @@ window.addEventListener("DOMContentLoaded", async () => {
           manage: lockManage.checked,
           chat: lockChat.checked,
           arrangement: lockArrangement.checked,
-          captain: lockCaptain.checked
+          captain: lockCaptain.checked,
+          roulette: lockRoulette.checked
       });
 
       alert("保存しました");

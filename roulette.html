@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     /* ============================================
        Glass-morphism × Dark Mode Design System
@@ -20,16 +21,184 @@
 
     body {
       font-family: 'IBM Plex Mono', monospace;
-      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      background: linear-gradient(135deg, #ffd7fc 0%, #ffcff9 100%);
       background-attachment: fixed;
       min-height: 100vh;
-      color: #ffffff;
+      color: #000000;
       overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
+    }
+
+    /* ============================================
+       Header Styles
+       ============================================ */
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      z-index: 100;
+      position: sticky;
+      top: 0;
+    }
+
+    .topbar h1 {
+      font-size: 1.5rem;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .header-clock {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.5rem;
+      color: #06B6D4;
+      font-weight: 600;
+    }
+
+    .profile {
+      position: relative;
+    }
+
+    .profile-btn {
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid rgba(6, 182, 212, 0.5);
+      color: #06B6D4;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .profile-btn:hover {
+      background: rgba(6, 182, 212, 0.4);
+      box-shadow: 0 2px 8px rgba(6, 182, 212, 0.3);
+    }
+
+    .profile-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(6, 182, 212, 0.5);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-top: 0.5rem;
+      min-width: 200px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      z-index: 101;
+    }
+
+    .profile-menu.active {
+      display: block;
+    }
+
+    .profile-name {
+      color: #ffffff;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .profile-menu hr {
+      border: none;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 0.75rem 0;
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 0.5rem;
+      background: rgba(255, 107, 107, 0.3);
+      border: 1px solid rgba(255, 107, 107, 0.5);
+      color: #FF6B6B;
+      border-radius: 0.4rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 107, 107, 0.5);
+    }
+
+    /* ============================================
+       Sidebar Styles
+       ============================================ */
+
+    .layout {
+      display: flex;
+      flex: 1;
+      position: relative;
+    }
+
+    .sidebar {
+      width: 80px;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem 0;
+      gap: 1rem;
+      box-shadow: 2px 0 12px rgba(0, 0, 0, 0.3);
+      z-index: 50;
+      position: sticky;
+      left: 0;
+      top: 0;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 0.75rem;
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .sidebar a:hover {
+      background: rgba(6, 182, 212, 0.3);
+      border-color: rgba(6, 182, 212, 0.8);
+      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .sidebar a img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      filter: brightness(0.9) drop-shadow(0 1px 2px rgba(6, 182, 212, 0.3));
+    }
+
+    .sidebar a:hover img {
+      filter: brightness(1.1) drop-shadow(0 2px 4px rgba(6, 182, 212, 0.6));
     }
 
     /* ============================================
@@ -127,18 +296,25 @@
     }
 
     /* ============================================
-       Main Layout
+       Main Content Area
        ============================================ */
+
+    .content-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem;
+      overflow-y: auto;
+      position: relative;
+      z-index: 2;
+    }
 
     .main-container {
       display: flex;
-      min-height: 100vh;
       gap: 2rem;
-      padding: 2rem;
       max-width: 1600px;
       margin: 0 auto;
-      position: relative;
-      z-index: 2;
+      width: 100%;
     }
 
     .center-content {
@@ -177,7 +353,7 @@
 
     .header-title h1 {
       font-size: 2.5rem;
-      color: #ffffff;
+      color: #000000;
       text-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
     }
 
@@ -237,7 +413,7 @@
     }
 
     .wheel-label {
-      color: rgba(255, 255, 255, 0.7);
+      color: rgba(0, 0, 0, 0.7);
       font-size: 0.9rem;
       font-weight: 500;
       margin-top: 1rem;
@@ -267,7 +443,7 @@
 
     label {
       display: block;
-      color: #ffffff;
+      color: #000000;
       font-weight: 600;
       margin-bottom: 0.75rem;
       font-size: 0.9rem;
@@ -280,7 +456,7 @@
       background: rgba(255, 255, 255, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 0.75rem;
-      color: #ffffff;
+      color: #000000;
       font-family: 'IBM Plex Mono', monospace;
       font-size: 0.85rem;
       transition: all 0.3s ease;
@@ -403,11 +579,12 @@
       flex: 1;
     }
 
+    /* デフォルト（＝表示中 → 非表示にするボタン） */
     .toggle-btn {
       padding: 0.4rem 0.8rem;
-      background: rgba(107, 203, 119, 0.3);
-      border: 1px solid rgba(107, 203, 119, 0.5);
-      color: #6BCB77;
+      background: rgba(255, 107, 107, 0.3); /* 赤 */
+      border: 1px solid rgba(255, 107, 107, 0.5);
+      color: #FF6B6B;
       border-radius: 0.4rem;
       font-size: 0.75rem;
       cursor: pointer;
@@ -417,19 +594,20 @@
     }
 
     .toggle-btn:hover {
-      background: rgba(107, 203, 119, 0.5);
-    }
-
-    .toggle-btn.hidden {
-      background: rgba(255, 107, 107, 0.3);
-      border-color: rgba(255, 107, 107, 0.5);
-      color: #FF6B6B;
-    }
-
-    .toggle-btn.hidden:hover {
       background: rgba(255, 107, 107, 0.5);
     }
 
+    /* hidden状態（＝非表示中 → 表示するボタン） */
+    .toggle-btn.hidden {
+      background: rgba(41, 255, 70, 0.59); /* 緑 */
+      border: 1px solid rgba(41, 255, 70, 0.8);
+      color: #0a0a0a;
+    }
+
+    .toggle-btn.hidden:hover {
+      background: rgba(27, 151, 44, 0.63);
+    }
+    
     /* ============================================
        Modal Popup
        ============================================ */
@@ -545,7 +723,6 @@
       .main-container {
         flex-direction: column;
         gap: 1rem;
-        padding: 1rem;
       }
 
       .right-panel {
@@ -578,8 +755,24 @@
     }
 
     @media (max-width: 768px) {
-      .main-container {
-        padding: 0.5rem;
+      .content-wrapper {
+        padding: 1rem;
+      }
+
+      .sidebar {
+        width: 70px;
+        padding: 0.75rem 0;
+        gap: 0.75rem;
+      }
+
+      .sidebar a {
+        width: 50px;
+        height: 50px;
+      }
+
+      .sidebar a img {
+        width: 28px;
+        height: 28px;
       }
 
       .right-panel {
@@ -602,6 +795,14 @@
         grid-template-columns: 1fr;
         gap: 1rem;
       }
+
+      .topbar {
+        padding: 0.75rem 1rem;
+      }
+
+      .topbar h1 {
+        font-size: 1.2rem;
+      }
     }
   </style>
 </head>
@@ -609,64 +810,76 @@
   <!-- 🌸 Spring Background with Real Images -->
   <div class="spring-background" id="springBackground"></div>
 
-  <div class="main-container">
-    <!-- Center Content -->
-    <div class="center-content">
-      <!-- Header -->
-      <div class="header">
-        <div class="header-title">
-          <span class="sparkle">✨</span>
-          <h1>スペシャルルーレット</h1>
-          <span class="sparkle">✨</span>
-        </div>
-        <p class="header-subtitle">Glass-morphism Design × Firebase</p>
-      </div>
-
-      <!-- Wheels -->
-      <div class="wheels-container">
-        <div class="wheel-wrapper">
-          <div class="wheel-panel">
-            <canvas id="wheelLeft" width="400" height="400"></canvas>
-          </div>
-          <p class="wheel-label">番号ルーレット</p>
-        </div>
-
-        <div class="wheel-wrapper">
-          <div class="wheel-panel">
-            <canvas id="wheelRight" width="400" height="400"></canvas>
-          </div>
-          <p class="wheel-label">景品ルーレット</p>
-        </div>
-      </div>
+  <!-- ===== ヘッダー ===== -->
+  <header class="topbar">
+    <h1>オープンキャンパス専用　ルーレット</h1>
+    <div class="topbar-right">
+      <div id="headerClock" class="header-clock"></div>
     </div>
+  </header>
 
-    <!-- Right Panel -->
-    <div class="right-panel">
-      <!-- Control Panel -->
-      <div class="control-panel">
-        <div class="control-section">
-          <label for="prizeTextarea">景品を設定（1行1つ）</label>
-          <textarea
-            id="prizeTextarea"
-            placeholder="選択肢 1&#10;選択肢 2&#10;選択肢 3&#10;選択肢 4&#10;選択肢 5&#10;選択肢 6"
-          >選択肢 1
+    <!-- コンテンツエリア -->
+    <div class="content-wrapper">
+      <div class="main-container">
+        <!-- Center Content -->
+        <div class="center-content">
+          <!-- Header -->
+          <div class="header">
+            <div class="header-title">
+              <span class="sparkle">✨</span>
+              <h1>スペシャルルーレット</h1>
+              <span class="sparkle">✨</span>
+            </div>
+            <p class="header-subtitle">Tokyo_AI_IT × ChatGPT × Manus</p>
+          </div>
+
+          <!-- Wheels -->
+          <div class="wheels-container">
+            <div class="wheel-wrapper">
+              <div class="wheel-panel">
+                <canvas id="wheelLeft" width="400" height="400"></canvas>
+              </div>
+              <p class="wheel-label">番号ルーレット</p>
+            </div>
+
+            <div class="wheel-wrapper">
+              <div class="wheel-panel">
+                <canvas id="wheelRight" width="400" height="400"></canvas>
+              </div>
+              <p class="wheel-label">景品ルーレット</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+          <!-- Control Panel -->
+          <div class="control-panel">
+            <div class="control-section">
+              <label for="prizeTextarea">景品を設定（1行1つ）</label>
+              <textarea
+                id="prizeTextarea"
+                placeholder="選択肢 1&#10;選択肢 2&#10;選択肢 3&#10;選択肢 4&#10;選択肢 5&#10;選択肢 6"
+              >選択肢 1
 選択肢 2
 選択肢 3
 選択肢 4
 選択肢 5
 選択肢 6</textarea>
-          <div class="prize-tags" id="prizeTags"></div>
-        </div>
-        <div class="control-section">
-          <button class="spin-button" id="spinBtn" onclick="spin()">🎡 回す！</button>
-        </div>
-      </div>
+              <div class="prize-tags" id="prizeTags"></div>
+            </div>
+            <div class="control-section">
+              <button class="spin-button" id="spinBtn" onclick="spin()">🎡 回す！</button>
+            </div>
+          </div>
 
-      <!-- Management Panel -->
-      <div class="management-panel">
-        <div class="management-title">📋 非表示管理</div>
-        <div class="management-list" id="managementList">
-          <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem;">読み込み中...</p>
+          <!-- Management Panel -->
+          <div class="management-panel">
+            <div class="management-title">📋 非表示管理</div>
+            <div class="management-list" id="managementList">
+              <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem;">読み込み中...</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -726,7 +939,7 @@
     let numbers = [];
     let prizes = [];
     let allNumbers = [];
-    let allPrizes = [];
+    let allPrizes = [];  // ⭐ ローカル管理用
     let currentResult = { number: null, prize: null };
 
     let leftRotation = 0;
@@ -735,7 +948,7 @@
     let spinningRight = false;
 
     // ============================================
-    // Firebase から番号を取得
+    // Firebase から番号を取得（変更なし）
     // ============================================
     onSnapshot(collection(db, "users"), (snap) => {
       allNumbers = snap.docs.map(d => ({
@@ -750,6 +963,11 @@
       }
       updateManagementList();
     });
+
+    // ============================================
+    // 景品データはローカル管理のみ（Firebase削除）
+    // ============================================
+    // onSnapshot(doc(db, "settings", "prizes")) は削除
 
     function drawWheel(ctx, items, rotation) {
       const size = 400;
@@ -784,6 +1002,7 @@
         ctx.lineWidth = 2;
         ctx.stroke();
 
+        // Draw text - セグメント中央に正面向きで配置
         ctx.save();
         
         const midAngle = angle + arc / 2;
@@ -820,6 +1039,7 @@
       ctx.shadowBlur = 15;
       ctx.fillStyle = "#06B6D4";
       ctx.beginPath();
+      // ⭐ ポインターを上部中央に配置（下向き三角形）
       ctx.moveTo(center, 30);
       ctx.lineTo(center - 15, 0);
       ctx.lineTo(center + 15, 0);
@@ -831,10 +1051,11 @@
       return new Promise(resolve => {
         let rotation = 0;
         let startTime = Date.now();
-        const duration = 5000;
-        const totalRotations = 5 + Math.random() * 3;
+        const duration = 10000; // 5秒間回転（より自然な速度）
+        const totalRotations = 5 + Math.random() * 50; // 5～8回転
 
         function easeInOutCubic(t) {
+          // ⭐ 自然な加速・減速曲線
           return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         }
 
@@ -843,6 +1064,7 @@
           const progress = Math.min(elapsed / duration, 1);
           const eased = easeInOutCubic(progress);
           
+          // ⭐ 滑らかな回転速度（ランダムな変動なし）
           rotation = eased * totalRotations * Math.PI * 2;
 
           if (isLeft) {
@@ -858,7 +1080,7 @@
           } else {
             const arc = (2 * Math.PI) / items.length;
             const normalizedRotation = rotation % (2 * Math.PI);
-            const pointerAngle = Math.PI / 2;
+            const pointerAngle = -Math.PI / 2;  // ⭐ ポインターを上部に固定
             const adjustedAngle = (pointerAngle - normalizedRotation + 2 * Math.PI) % (2 * Math.PI);
             
             let index = Math.floor(adjustedAngle / arc);
@@ -879,13 +1101,17 @@
       });
     }
 
+    // ============================================
+    // ⭐ 修正: textareaからローカルのallPrizesを更新
+    // ============================================
     function updatePrizesFromTextarea() {
       const textarea = document.getElementById("prizeTextarea");
       const inputPrizes = textarea.value
         .split("\n")
         .map(v => v.trim())
         .filter(v => v);
-
+      
+      // ローカルのallPrizesを更新（既存の非表示状態を保持）
       allPrizes = inputPrizes.map((name) => {
         const existingPrize = allPrizes.find(p => p.name === name);
         return {
@@ -893,40 +1119,131 @@
           hidden: existingPrize?.hidden || false
         };
       });
-
+      
+      // 表示用prizesを更新
       prizes = allPrizes.filter(p => !p.hidden).map(p => p.name);
+      
       if (prizes.length > 0) {
         drawWheel(rightCtx, prizes, rightRotation);
+        updatePrizeTags();
       }
+      
       updateManagementList();
+    }
+
+    document.getElementById("prizeTextarea").addEventListener("input", updatePrizesFromTextarea);
+
+    function updatePrizeTags() {
+      const container = document.getElementById("prizeTags");
+      container.innerHTML = prizes.map(prize => 
+        `<span class="prize-tag">${prize}</span>`
+      ).join("");
     }
 
     function updateManagementList() {
-      const list = document.getElementById("managementList");
-      
-      if (allPrizes.length === 0) {
-        list.innerHTML = '<p style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem;">データなし</p>';
-        return;
+      const container = document.getElementById("managementList");
+      let html = "";
+
+      // 番号の管理
+      if (allNumbers.length > 0) {
+        html += '<div style="color: #06B6D4; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.8rem;">番号</div>';
+        allNumbers.forEach(item => {
+          const isHidden = item.hidden;
+          html += `
+            <div class="management-item">
+              <span class="management-item-text">${item.number}</span>
+              <button class="toggle-btn ${isHidden ? 'hidden' : ''}" onclick="toggleNumber('${item.id}', ${isHidden})">
+                ${isHidden ? '表示' : '非表示'}
+              </button>
+            </div>
+          `;
+        });
       }
 
-      list.innerHTML = allPrizes.map((prize, index) => `
-        <div class="management-item">
-          <span class="management-item-text">${prize.name}</span>
-          <button class="toggle-btn ${prize.hidden ? 'hidden' : ''}" onclick="togglePrize(${index})">
-            ${prize.hidden ? '表示' : '非表示'}
-          </button>
-        </div>
-      `).join("");
+      // 景品の管理（ローカルデータ）
+      if (allPrizes.length > 0) {
+        html += '<div style="color: #06B6D4; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; font-size: 0.8rem;">景品</div>';
+        allPrizes.forEach((item, index) => {
+          const isHidden = item.hidden;
+          html += `
+            <div class="management-item">
+              <span class="management-item-text">${item.name}</span>
+              <button class="toggle-btn ${isHidden ? 'hidden' : ''}" onclick="togglePrize(${index}, ${isHidden})">
+                ${isHidden ? '表示' : '非表示'}
+              </button>
+            </div>
+          `;
+        });
+      }
+
+      container.innerHTML = html || '<p style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem;">データなし</p>';
     }
 
-    window.togglePrize = function(index) {
-      allPrizes[index].hidden = !allPrizes[index].hidden;
-      prizes = allPrizes.filter(p => !p.hidden).map(p => p.name);
-      if (prizes.length > 0) {
-        drawWheel(rightCtx, prizes, rightRotation);
+    window.toggleNumber = async function(id, currentHidden) {
+      try {
+        await updateDoc(doc(db, "users", id), { hidden: !currentHidden });
+      } catch (error) {
+        console.error('Error toggling number:', error);
       }
-      updateManagementList();
     };
+
+    // ============================================
+    // ⭐ 修正: ローカルのallPrizesのみを更新（Firebase不使用）
+    // ============================================
+    window.togglePrize = function(index, currentHidden) {
+      allPrizes[index].hidden = !currentHidden;
+      
+      // 表示用prizesを更新
+      prizes = allPrizes.filter(p => !p.hidden).map(p => p.name);
+      
+      // UIを更新
+      drawWheel(rightCtx, prizes, rightRotation);
+      updateManagementList();
+      updatePrizeTags();
+    };
+
+    function refreshWheels() {
+      numbers = allNumbers.filter(n => !n.hidden).map(n => n.number);
+      prizes = allPrizes.filter(p => !p.hidden).map(p => p.name);
+
+      drawWheel(leftCtx, numbers, leftRotation);
+      drawWheel(rightCtx, prizes, rightRotation);
+    }
+
+    function createConfetti() {
+      const colors = ['#06B6D4', '#0891b2', '#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF'];
+      const confettiCount = 50;
+
+      for (let i = 0; i < confettiCount; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * window.innerWidth + 'px';
+        confetti.style.top = '-10px';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.opacity = Math.random();
+        document.body.appendChild(confetti);
+
+        const duration = Math.random() * 2 + 2;
+        const xMove = (Math.random() - 0.5) * 200;
+        const rotation = Math.random() * 720;
+
+        confetti.animate([
+          {
+            transform: `translateY(0) translateX(0) rotate(0deg)`,
+            opacity: 1
+          },
+          {
+            transform: `translateY(${window.innerHeight + 20}px) translateX(${xMove}px) rotate(${rotation}deg)`,
+            opacity: 0
+          }
+        ], {
+          duration: duration * 1000,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        });
+
+        setTimeout(() => confetti.remove(), duration * 1000);
+      }
+    }
 
     window.spin = async function() {
       const spinBtn = document.getElementById("spinBtn");
@@ -935,62 +1252,111 @@
         document.getElementById("resultModal").classList.add("active");
         return;
       }
-
+      
       if (numbers.length === 0) {
         alert("番号がまだ読み込まれていません");
         return;
       }
-
+      
       if (prizes.length === 0) {
         alert("景品を入力してください");
         return;
       }
 
+      spinningLeft = true;
+      spinningRight = true;
       spinBtn.disabled = true;
 
       const num = await spinWheel(leftCtx, numbers, true);
       await new Promise(r => setTimeout(r, 500));
       const prize = await spinWheel(rightCtx, prizes, false);
 
-      spinBtn.disabled = false;
+      spinningLeft = false;
+      spinningRight = false;
 
-      currentResult = { number: num, prize };
-
-      const prizeIndex = allPrizes.findIndex(p => p.name === prize);
-      if (prizeIndex !== -1) {
-        allPrizes[prizeIndex].hidden = true;
-        prizes = allPrizes.filter(p => !p.hidden).map(p => p.name);
-        drawWheel(rightCtx, prizes, rightRotation);
-      }
+      currentResult = { number: num, prize: prize };
 
       document.getElementById("resultNumber").textContent = num;
       document.getElementById("resultPrize").textContent = prize;
+      
+      // ============================================
+      // ⭐ 修正: 景品が当選したら自動的にローカルで非表示に
+      // ============================================
+      const prizeIndex = allPrizes.findIndex(p => p.name === prize);
+      if (prizeIndex !== -1) {
+        allPrizes[prizeIndex].hidden = true;
+      }
+      
+      // 表示用prizesを更新
+      prizes = allPrizes.filter(p => !p.hidden).map(p => p.name);
+      
       document.getElementById("resultModal").classList.add("active");
+
       spinBtn.textContent = "✅ 結果確認";
+      spinBtn.disabled = false;
+
+      createConfetti();
     };
 
     window.closeModal = function() {
       document.getElementById("resultModal").classList.remove("active");
-      document.getElementById("spinBtn").textContent = "🎡 回す！";
-      updateManagementList();
     };
 
-    window.hideResult = function() {
+    // ============================================
+    // ⭐ 修正: hideResult()をローカル管理に対応
+    // ============================================
+    window.hideResult = async function() {
       if (!currentResult.number || !currentResult.prize) return;
 
-      const prizeIndex = allPrizes.findIndex(p => p.name === currentResult.prize);
-      if (prizeIndex !== -1) {
-        allPrizes[prizeIndex].hidden = true;
-        prizes = allPrizes.filter(p => !p.hidden).map(p => p.name);
-        drawWheel(rightCtx, prizes, rightRotation);
-      }
+      try {
+        // 番号非表示（Firebase）
+        for (const num of allNumbers) {
+          if (num.number === currentResult.number) {
+            await updateDoc(doc(db, "users", num.id), { hidden: true });
+            break;
+          }
+        }
 
-      closeModal();
+        // 景品非表示（ローカル）
+        const prizeIndex = allPrizes.findIndex(p => p.name === currentResult.prize);
+        if (prizeIndex !== -1) {
+          allPrizes[prizeIndex].hidden = true;
+        }
+
+        console.log('Hiding prize:', currentResult.prize);
+        console.log('Updated allPrizes:', allPrizes);
+
+        // 表示用prizesを更新
+        prizes = allPrizes.filter(p => !p.hidden).map(p => p.name);
+        
+        // UI更新
+        await new Promise(r => setTimeout(r, 300));
+        refreshWheels();
+        updateManagementList();
+        updatePrizeTags();
+
+        // モーダルリセット
+        document.getElementById("resultModal").classList.remove("active");
+        currentResult = { number: null, prize: null };
+        document.getElementById("spinBtn").textContent = "🎡 回す！";
+        document.getElementById("spinBtn").disabled = false;
+
+      } catch (error) {
+        console.error('Error hiding result:', error);
+      }
     };
 
-    document.getElementById("prizeTextarea").addEventListener("input", updatePrizesFromTextarea);
-
-    updatePrizesFromTextarea();
+    // ============================================
+    // 初期化（Firebase景品取得削除）
+    // ============================================
+    window.addEventListener("load", () => {
+      // textareaからallPrizesを初期化
+      updatePrizesFromTextarea();
+      
+      if (numbers.length > 0) {
+        drawWheel(leftCtx, numbers, leftRotation);
+      }
+    });
   </script>
 
   <script>
@@ -1007,18 +1373,16 @@
       
       // 桜の画像URL（透明背景）
       const blossomUrl = "https://freesvg.org/img/009.png";
-
+      
       for (let i = 0; i < particleCount; i++) {
         const rand = Math.random();
         let type, duration, size;
 
         if (rand > 0.85) {
-          // 蝶（15%）
           type = 'butterfly';
           size = Math.random() * 40 + 30;
           duration = Math.random() * 15 + 25;
         } else {
-          // 桜（85%）
           type = 'blossom';
           size = Math.random() * 30 + 15;
           duration = Math.random() * 15 + 20;
@@ -1059,6 +1423,16 @@
     }
 
     document.addEventListener('DOMContentLoaded', createSpringParticles);
+  </script>
+  <script type="module" src="layout.js"></script>
+  <script>
+  /* メニュー開閉用（グローバル） */
+  window.toggleMenu = function(){
+      const sidebar = document.getElementById("sidebar");
+      const page = document.getElementById("page");
+      sidebar.classList.toggle("close");
+      page.classList.toggle("shift");
+  };
   </script>
 </body>
 </html>

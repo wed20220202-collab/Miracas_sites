@@ -255,6 +255,10 @@ async function checkPageLocks(){
     disableCard("captain","report");
   }
 
+  if(locks.roulette){
+    disableCard("roulette","roulette");
+  }
+
 }
 
 function disableCard(page,icon){

@@ -44,6 +44,10 @@
     <a href="arrangement.html" title="配置図">
         <img src="icons/arrangement.png">
     </a>
+
+    <a href="roulette.html" title="ルーレット">
+        <img src="icons/roulette.png">
+    </a>
 </nav>
 
 <div id="page" class="page shift">
@@ -110,6 +114,11 @@
         OC記録を停止
 </label>
 <br>
+<label>
+    <input type="checkbox" id="lockRoulette">
+        ルーレットを停止
+</label>
+<br>
 <button id="saveLockBtn">保存</button>
 </div>
 
@@ -143,6 +152,15 @@
 
 <script type="module" src="settingGuard.js"></script>
 <script type="module" src="layout.js"></script>
+<script>
+/* メニュー開閉用（グローバル） */
+window.toggleMenu = function(){
+    const sidebar = document.getElementById("sidebar");
+    const page = document.getElementById("page");
+    sidebar.classList.toggle("close");
+    page.classList.toggle("shift");
+};
+</script>
 
 </body>
 </html>
