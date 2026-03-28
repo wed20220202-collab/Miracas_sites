@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 プレミアム抽選ルーレット</title>
+    <link rel="stylesheet" href="roulette.css">
+    <style>
+        /* ============================================
+           Spring Background Animations
+           ============================================ */
+        
+        @keyframes blossomFall {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            5% {
+                opacity: 1;
+            }
+            95% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) translateX(100px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes butterflyWave {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.8;
+            }
+            25% {
+                transform: translateY(15vh) translateX(30px) rotate(5deg);
+            }
+            50% {
+                transform: translateY(50vh) translateX(-20px) rotate(-5deg);
+                opacity: 1;
+            }
+            75% {
+                transform: translateY(75vh) translateX(25px) rotate(5deg);
+            }
+            95% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pollenFloat {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(50vh) translateX(50px);
+                opacity: 1;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes wingFlap {
+            0%, 100% {
+                transform: scaleX(1);
+            }
+            50% {
+                transform: scaleX(0.8);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        body {
+            background: linear-gradient(
+                135deg,
+                #FFF5F7 0%,
+                #FFE5F0 25%,
+                #FFF0F5 50%,
+                #FFE8F0 75%,
+                #FFF8FA 100%
+            );
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .spring-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                #FFF5F7 0%,
+                #FFE5F0 25%,
+                #FFF0F5 50%,
+                #FFE8F0 75%,
+                #FFF8FA 100%
+            );
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .spring-background::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(
+                ellipse at 20% 50%,
+                rgba(255, 182, 217, 0.08) 0%,
+                transparent 50%
+            );
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .spring-background::after {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(
+                circle,
+                rgba(255, 192, 203, 0.1) 0%,
+                transparent 70%
+            );
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: -1;
+            animation: pulse 6s ease-in-out infinite;
+        }
+
+        .spring-particle {
+            position: fixed;
+            pointer-events: none;
+        }
+
+        .spring-blossom {
+            animation: blossomFall var(--duration) linear var(--delay) infinite;
+            filter: drop-shadow(0 0 4px var(--color));
+        }
+
+        .spring-butterfly {
+            animation: butterflyWave var(--duration) ease-in-out var(--delay) infinite;
+        }
+
+        .spring-butterfly svg {
+            animation: wingFlap 0.4s ease-in-out infinite;
+            filter: drop-shadow(0 2px 4px var(--color));
+        }
+
+        .spring-pollen {
+            animation: pollenFloat var(--duration) ease-in-out var(--delay) infinite;
+            box-shadow: 0 0 6px var(--color), inset 0 0 3px rgba(255, 255, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .spring-particle {
+                animation-duration: calc(var(--duration) * 0.8) !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 🌸 Spring Background -->
+    <div class="spring-background" id="springBackground"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="header">
+            <div class="header-title">
+                <span class="sparkle">✨</span>
+                <h1>プレミアム抽選ルーレット</h1>
+                <span class="sparkle">✨</span>
+            </div>
+            <p class="header-subtitle">Spring Edition with Animations</p>
+        </div>
+
+        <div class="main-container">
+            <div class="center-content">
+                <div class="wheels-container">
+                    <div class="wheel-wrapper">
+                        <div class="wheel-panel">
+                            <canvas id="leftCanvas" width="400" height="400"></canvas>
+                        </div>
+                        <p class="wheel-label">番号ルーレット</p>
+                    </div>
+
+                    <div class="wheel-wrapper">
+                        <div class="wheel-panel">
+                            <canvas id="rightCanvas" width="400" height="400"></canvas>
+                        </div>
+                        <p class="wheel-label">景品ルーレット</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="control-panel">
+                    <div class="control-section">
+                        <label for="prizeTextarea">景品を設定（1行1つ）</label>
+                        <textarea id="prizeTextarea" placeholder="選択肢 1&#10;選択肢 2&#10;選択肢 3"></textarea>
+                    </div>
+                    <div class="control-section">
+                        <button class="spin-button" id="spinBtn">🎡 回す！</button>
+                    </div>
+                </div>
+
+                <div class="management-panel">
+                    <div class="management-title">📋 非表示管理</div>
+                    <div class="management-list" id="managementList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="result-label">🎉 抽選結果 🎉</div>
+            <div class="result-grid">
+                <div class="result-item">
+                    <div class="result-item-label">当選番号</div>
+                    <div class="result-item-value" id="resultNumber">-</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-item-label">景品</div>
+                    <div class="result-item-value" id="resultPrize">-</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button class="modal-close-btn" id="closeModalBtn">閉じる</button>
+                <button class="modal-close-btn" id="hideResultBtn" style="background: rgba(255, 107, 107, 0.3); border-color: rgba(255, 107, 107, 0.8); color: #FF6B6B;">👁️ 非表示</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="roulette.js"></script>
+    <script>
+        // ============================================
+        // Spring Background Particle Generation
+        // ============================================
+        
+        function createSpringBackground() {
+            const background = document.getElementById('springBackground');
+            const particleCount = 60;
+
+            const blossomColors = ['#FFB6D9', '#FFC0CB', '#FFD4E5', '#FFDCE8', '#FFE5F0'];
+            const butterflyColors = ['#FFB6D9', '#FFD4E5', '#FFE5F0', '#FFC0CB'];
+            const pollenColors = ['#FFF8DC', '#FFFACD', '#FFE4B5', '#FFDAB9'];
+
+            for (let i = 0; i < particleCount; i++) {
+                const rand = Math.random();
+                let type, colorPalette, size, duration;
+
+                if (rand > 0.75) {
+                    type = 'butterfly';
+                    colorPalette = butterflyColors;
+                    size = Math.random() * 18 + 12;
+                    duration = Math.random() * 18 + 22;
+                } else if (rand > 0.4) {
+                    type = 'blossom';
+                    colorPalette = blossomColors;
+                    size = Math.random() * 10 + 6;
+                    duration = Math.random() * 18 + 20;
+                } else {
+                    type = 'pollen';
+                    colorPalette = pollenColors;
+                    size = Math.random() * 3 + 1;
+                    duration = Math.random() * 15 + 18;
+                }
+
+                const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+                const delay = Math.random() * 8;
+                const x = Math.random() * 100;
+
+                const particle = document.createElement('div');
+                particle.className = `spring-particle spring-${type}`;
+                particle.style.setProperty('--color', color);
+                particle.style.setProperty('--duration', `${duration}s`);
+                particle.style.setProperty('--delay', `${delay}s`);
+                particle.style.left = `${x}%`;
+                particle.style.top = `-${Math.random() * 20}%`;
+
+                if (type === 'blossom') {
+                    particle.innerHTML = `
+                        <svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="3" fill="${color}" opacity="0.9" />
+                            ${[0, 72, 144, 216, 288].map((angle) => `
+                                <ellipse cx="${12 + Math.cos((angle * Math.PI) / 180) * 7}" 
+                                         cy="${12 + Math.sin((angle * Math.PI) / 180) * 7}" 
+                                         rx="3" ry="5" fill="${color}" opacity="0.85" 
+                                         transform="rotate(${angle} 12 12)" />
+                            `).join('')}
+                        </svg>
+                    `;
+                } else if (type === 'butterfly') {
+                    particle.innerHTML = `
+                        <svg width="${size}" height="${size}" viewBox="0 0 30 24" fill="none">
+                            <path d="M 8 8 Q 5 5 3 8 Q 2 12 5 14 Q 8 12 8 8" fill="${color}" opacity="0.9" />
+                            <path d="M 22 8 Q 25 5 27 8 Q 28 12 25 14 Q 22 12 22 8" fill="${color}" opacity="0.9" />
+                            <path d="M 8 14 Q 5 15 4 18 Q 4 21 7 22 Q 10 20 8 14" fill="${color}" opacity="0.8" />
+                            <path d="M 22 14 Q 25 15 26 18 Q 26 21 23 22 Q 20 20 22 14" fill="${color}" opacity="0.8" />
+                            <ellipse cx="15" cy="12" rx="2" ry="6" fill="#FFB6D9" opacity="0.9" />
+                            <circle cx="15" cy="7" r="1.5" fill="#FFB6D9" />
+                        </svg>
+                    `;
+                } else {
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.background = `radial-gradient(circle, ${color} 0%, ${color} 70%, transparent 100%)`;
+                    particle.style.borderRadius = '50%';
+                }
+
+                background.appendChild(particle);
+            }
+        }
+
+        // Initialize spring background on page load
+        document.addEventListener('DOMContentLoaded', createSpringBackground);
+    </script>
+</body>
+</html>
