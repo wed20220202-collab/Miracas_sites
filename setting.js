@@ -45,6 +45,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const endInput = document.getElementById("endHour");
   const deleteBtn = document.getElementById("deleteChatBtn");
   const resetBtn  = document.getElementById("resetArrangementBtn");
+  const deleterouletteBtn = document.getElementById("deleterouletteBtn");
   const logoutBtn = document.getElementById("logoutBtn");
 
   const locklist = document.getElementById("lockList");
@@ -142,6 +143,16 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       await setDoc(arrRef,{ members:newMembers });
       alert("全員リセットしました");
+  });
+
+  deleterouletteBtn.addEventListener("click", async ()=>{
+      if(!confirm("本当に削除しますか？")) return;
+
+      const snap = await getDocs(collection(db,"users"));
+      for(const d of snap.docs){
+          await deleteDoc(d.ref);
+      }
+      alert("削除完了");
   });
 
   /* ===== ログ表示 ===== */
