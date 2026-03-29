@@ -52,7 +52,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         if (d.system === true) {
           nameHTML =
-          `<span class="name system">Miracas_System</span>`;
+          `<span class="name system">System</span>`;
         }
 
         div.innerHTML = `
