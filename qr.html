@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>🎯 抽選参加</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -115,6 +118,7 @@
 
     .card-content {
       margin-bottom: 2rem;
+      text-align: left;
     }
 
     .label {
@@ -125,13 +129,53 @@
       font-weight: 500;
     }
 
+    /* ============================================
+       Input Field
+       ============================================ */
+
+    input[type="text"] {
+      width: 100%;
+      padding: 1rem;
+      border-radius: 1rem;
+      border: 2px solid rgba(6, 182, 212, 0.3);
+      background: rgba(255, 255, 255, 0.05);
+      color: #ffffff;
+      font-size: 1rem;
+      font-family: 'IBM Plex Mono', monospace;
+      outline: none;
+      transition: all 0.3s ease;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(6, 182, 212, 0.8);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+    }
+
+    input[type="text"]:disabled {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(6, 182, 212, 0.2);
+      color: rgba(255, 255, 255, 0.5);
+      cursor: not-allowed;
+    }
+
+    input[type="text"]::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* ============================================
+       Display Box
+       ============================================ */
+
     .number-display {
       background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
       border: 2px solid rgba(6, 182, 212, 0.5);
       border-radius: 1.5rem;
       padding: 2rem;
       margin-bottom: 1.5rem;
-      min-height: 120px;
+      min-height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -145,16 +189,17 @@
     }
 
     .number-value {
-      font-size: 4rem;
+      font-size: 2.5rem;
       font-weight: 700;
       color: #06B6D4;
       text-shadow: 0 4px 12px rgba(6, 182, 212, 0.5);
       font-family: 'Space Grotesk', sans-serif;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
+      word-break: break-word;
     }
 
     .number-placeholder {
-      font-size: 2rem;
+      font-size: 1.5rem;
       color: rgba(6, 182, 212, 0.5);
       font-weight: 300;
     }
@@ -250,6 +295,12 @@
       color: #06B6D4;
     }
 
+    .status-error {
+      background: rgba(255, 107, 107, 0.2);
+      border: 1px solid rgba(255, 107, 107, 0.5);
+      color: #FF6B6B;
+    }
+
     /* ============================================
        Footer
        ============================================ */
@@ -305,11 +356,11 @@
       }
 
       .number-value {
-        font-size: 3rem;
+        font-size: 2rem;
       }
 
       .number-display {
-        min-height: 100px;
+        min-height: 80px;
       }
     }
 
@@ -323,7 +374,7 @@
       }
 
       .number-value {
-        font-size: 2.5rem;
+        font-size: 1.8rem;
       }
 
       button {
@@ -343,21 +394,29 @@
           <h1>抽選参加</h1>
           <span class="sparkle">🎯</span>
         </div>
-        <p class="card-subtitle">あなたの番号を取得</p>
+        <p class="card-subtitle">あなたの名前を登録</p>
       </div>
 
       <!-- Content -->
       <div class="card-content">
-        <label class="label">あなたの番号</label>
+        <label class="label">あなたの名前（20文字以内）</label>
+
+        <input 
+          id="nameInput"
+          type="text"
+          maxlength="20"
+          placeholder="名前を入力"
+        >
+
         <div class="number-display">
-          <div id="number" class="number-placeholder">---</div>
+          <div id="number" class="number-placeholder">未登録</div>
         </div>
       </div>
 
       <!-- Buttons -->
       <div class="button-group">
         <button id="joinBtn" onclick="join()">🎡 参加する</button>
-        <button id="copyBtn" class="button-secondary" onclick="copyNumber()" style="display: none;">📋 番号をコピー</button>
+        <button id="copyBtn" class="button-secondary" onclick="copyNumber()" style="display: none;">📋 コピー</button>
       </div>
 
       <!-- Status Message -->
@@ -365,7 +424,7 @@
 
       <!-- Footer -->
       <div class="card-footer">
-        <p class="footer-text">✨ ルーレット抽選に参加して、素敵な景品をゲットしよう！ ✨</p>
+        <p class="footer-text">✨抽選に参加して、豪華景品をゲットしよう！✨</p>
       </div>
     </div>
   </div>
@@ -376,7 +435,7 @@
        ============================================ */
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getFirestore, doc, getDoc, setDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCIQhHuF3we247IxmhrO3j-Gmr5RFYf-q4",
@@ -388,19 +447,90 @@
       appId: "1:36894057874:web:2ae9634f2b1d1081a90d4b"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    let app, db;
+
+    try {
+      app = initializeApp(firebaseConfig);
+      db = getFirestore(app);
+    } catch (error) {
+      console.error('Firebase initialization error:', error);
+    }
+
+    /* ============================================
+       Simple Storage System
+       ============================================ */
+
+    const StorageManager = {
+      set: function(key, value) {
+        try {
+          if (typeof(Storage) !== "undefined") {
+            localStorage.setItem(key, value);
+          }
+        } catch (e) {
+          console.warn('localStorage error:', e);
+        }
+
+        try {
+          sessionStorage.setItem(key, value);
+        } catch (e) {
+          console.warn('sessionStorage error:', e);
+        }
+
+        try {
+          const expirationDate = new Date();
+          expirationDate.setDate(expirationDate.getDate() + 365);
+          document.cookie = `${key}=${encodeURIComponent(value)}; expires=${expirationDate.toUTCString()}; path=/; SameSite=Lax`;
+        } catch (e) {
+          console.warn('Cookie error:', e);
+        }
+      },
+
+      get: function(key) {
+        try {
+          if (typeof(Storage) !== "undefined") {
+            const value = localStorage.getItem(key);
+            if (value) return value;
+          }
+        } catch (e) {
+          console.warn('localStorage get error:', e);
+        }
+
+        try {
+          const value = sessionStorage.getItem(key);
+          if (value) return value;
+        } catch (e) {
+          console.warn('sessionStorage get error:', e);
+        }
+
+        try {
+          const cookies = document.cookie.split(';');
+          for (let cookie of cookies) {
+            const [name, val] = cookie.trim().split('=');
+            if (name === key && val) {
+              return decodeURIComponent(val);
+            }
+          }
+        } catch (e) {
+          console.warn('Cookie get error:', e);
+        }
+
+        return null;
+      }
+    };
 
     /* ============================================
        UID Management
        ============================================ */
 
     function getUID() {
-      let uid = localStorage.getItem("uid");
+      let uid = StorageManager.get('uid');
+
       if (!uid) {
-        uid = crypto.randomUUID();
-        localStorage.setItem("uid", uid);
+        uid = 'uid_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        StorageManager.set('uid', uid);
+        console.log('Generated new UID:', uid);
       }
+
       return uid;
     }
 
@@ -412,7 +542,7 @@
       const statusEl = document.getElementById('statusMessage');
       statusEl.textContent = message;
       statusEl.className = `status-message show status-${type}`;
-      
+
       if (type === 'success') {
         setTimeout(() => {
           statusEl.classList.remove('show');
@@ -420,22 +550,28 @@
       }
     }
 
-    function updateNumberDisplay(number) {
+    function updateNumberDisplay(name) {
       const numberEl = document.getElementById('number');
-      numberEl.textContent = number;
+      numberEl.textContent = name;
       numberEl.classList.remove('number-placeholder');
       numberEl.classList.add('number-value');
-      
+
+      // Save to storage
+      StorageManager.set('name', name);
+
       // Show copy button
       document.getElementById('copyBtn').style.display = 'block';
       document.getElementById('joinBtn').style.display = 'none';
+
+      // Lock input
+      document.getElementById('nameInput').disabled = true;
     }
 
     window.copyNumber = function() {
-      const number = document.getElementById('number').textContent;
-      if (number !== '---') {
-        navigator.clipboard.writeText(number).then(() => {
-          showStatus('✓ 番号をコピーしました！', 'success');
+      const name = document.getElementById('number').textContent;
+      if (name !== '未登録') {
+        navigator.clipboard.writeText(name).then(() => {
+          showStatus('✓ 名前をコピーしました！', 'success');
         }).catch(() => {
           showStatus('コピーに失敗しました', 'info');
         });
@@ -448,10 +584,26 @@
 
     window.join = async function() {
       const joinBtn = document.getElementById('joinBtn');
-      const originalText = joinBtn.textContent;
-      
+      const nameInput = document.getElementById('nameInput');
+      const name = nameInput.value.trim();
+
+      // Validation
+      if (!name) {
+        showStatus('名前を入力してください', 'info');
+        return;
+      }
+
+      if (name.length > 20) {
+        showStatus('20文字以内で入力してください', 'info');
+        return;
+      }
+
       try {
-        // Show loading state
+        if (!db) {
+          showStatus('Firebaseが初期化されていません', 'error');
+          return;
+        }
+
         joinBtn.disabled = true;
         joinBtn.innerHTML = '<span class="spinner"></span>処理中...';
 
@@ -459,36 +611,43 @@
         const ref = doc(db, "users", uid);
         const snap = await getDoc(ref);
 
-        // Already has a number
-        if (snap.exists()) {
-          updateNumberDisplay(snap.data().number);
-          showStatus('✓ 既に参加済みです', 'success');
+        // Already registered
+        if (snap.exists() && snap.data().name) {
+          updateNumberDisplay(snap.data().name);
+          showStatus('✓ 既に登録済みです', 'success');
           return;
         }
 
-        // Generate random number
+        // Check for duplicate name
         const all = await getDocs(collection(db, "users"));
-        const used = all.docs.map(d => d.data().number);
+        const usedNames = all.docs
+          .map(d => {
+            const data = d.data();
+            return data.name ? data.name.trim() : null;
+          })
+          .filter(n => n !== null);
 
-        let num;
-        do {
-          num = Math.floor(Math.random() * 9000) + 1000;
-        } while (used.includes(num));
+        if (usedNames.includes(name)) {
+          showStatus('その名前は既に使われています', 'info');
+          joinBtn.disabled = false;
+          joinBtn.textContent = '🎡 参加する';
+          return;
+        }
 
         // Save to Firebase
         await setDoc(ref, {
-          number: num,
-          created: new Date()
+          name: name,
+          created: new Date().toISOString()
         });
 
-        updateNumberDisplay(num);
-        showStatus('🎉 参加完了！あなたの番号は ' + num + ' です', 'success');
+        updateNumberDisplay(name);
+        showStatus('🎉 登録完了！', 'success');
 
       } catch (error) {
-        console.error('Error:', error);
-        showStatus('エラーが発生しました。もう一度お試しください。', 'info');
+        console.error('Error in join():', error);
+        showStatus('エラーが発生しました。もう一度お試しください。', 'error');
         joinBtn.disabled = false;
-        joinBtn.textContent = originalText;
+        joinBtn.textContent = '🎡 参加する';
       }
     };
 
@@ -498,16 +657,47 @@
 
     window.addEventListener('load', async () => {
       try {
-        const uid = getUID();
-        const ref = doc(db, "users", uid);
-        const snap = await getDoc(ref);
+        // Try to restore from local storage first
+        const cachedName = StorageManager.get('name');
+        if (cachedName && cachedName !== '未登録') {
+          updateNumberDisplay(cachedName);
+          showStatus('✓ キャッシュから名前を復元しました', 'info');
+          return;
+        }
 
-        if (snap.exists()) {
-          updateNumberDisplay(snap.data().number);
-          showStatus('✓ 前回の番号を復元しました', 'info');
+        // If no cache and Firebase is available, try Firebase
+        if (db) {
+          const uid = getUID();
+          const ref = doc(db, "users", uid);
+          const snap = await getDoc(ref);
+
+          if (snap.exists() && snap.data().name) {
+            const name = snap.data().name;
+            updateNumberDisplay(name);
+            document.getElementById('nameInput').value = name;
+            showStatus('✓ Firebaseから名前を復元しました', 'info');
+          }
         }
       } catch (error) {
         console.error('Initialization error:', error);
+      }
+    });
+
+    // Also check on visibility change
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        try {
+          const cachedName = StorageManager.get('name');
+          if (cachedName && cachedName !== '未登録') {
+            const numberEl = document.getElementById('number');
+            if (numberEl.textContent === '未登録') {
+              updateNumberDisplay(cachedName);
+              showStatus('✓ 名前を復元しました', 'info');
+            }
+          }
+        } catch (error) {
+          console.error('Visibility change error:', error);
+        }
       }
     });
   </script>

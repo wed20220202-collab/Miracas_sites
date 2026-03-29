@@ -1018,16 +1018,19 @@ document.getElementById("qrModal").addEventListener("click", () => {
     let spinningRight = false;
 
     // ============================================
-    // Firebase から番号を取得（変更なし）
+    // Firebase から名前を取得（修正版）
     // ============================================
     onSnapshot(collection(db, "users"), (snap) => {
-      allNumbers = snap.docs.map(d => ({
-        id: d.id,
-        number: d.data().number || "",
-        hidden: d.data().hidden || false
-      }));
+      allNumbers = snap.docs.map(d => {
+        const data = d.data();
+        return {
+          id: d.id,
+          number: data.name || data.number || "",  // ⭐ nameを優先、なければnumber
+          hidden: data.hidden || false
+        };
+      });
       
-      numbers = allNumbers.filter(n => !n.hidden).map(n => n.number);
+      numbers = allNumbers.filter(n => !n.hidden && n.number).map(n => n.number);
       if (numbers.length > 0) {
         drawWheel(leftCtx, numbers, leftRotation);
       }
