@@ -646,7 +646,7 @@
       border: 2px solid rgba(6, 182, 212, 0.8);
       border-radius: 2rem;
       padding: 3rem;
-      max-width: 600px;
+      max-width: 900px;
       width: 90%;
       text-align: center;
       box-shadow: 0 20px 60px rgba(6, 182, 212, 0.4);
@@ -692,7 +692,7 @@
     }
 
     .result-item-value {
-      font-size: 3rem;
+      font-size: 2rem;
       font-weight: 700;
       color: #ffffff;
       word-break: break-word;
@@ -750,6 +750,21 @@
       border-radius: 1rem;
       box-shadow: 0 10px 40px rgba(0,0,0,0.5);
       animation: qrPop 0.3s ease;
+    }
+
+    .prize-checkbox-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .prize-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,255,255,0.1);
+      padding: 0.5rem;
+      border-radius: 0.5rem;
     }
 
     /* アニメーション */
@@ -910,33 +925,26 @@
             </div>
           </div>
         </div>
-
+        
         <!-- Right Panel -->
         <div class="right-panel">
           <!-- Control Panel -->
           <div class="control-panel">
             <div class="control-section">
-              <label for="prizeTextarea">景品を設定（1行1つ）</label>
-              <textarea
-                id="prizeTextarea"
-                placeholder="選択肢 1&#10;選択肢 2&#10;選択肢 3&#10;選択肢 4&#10;選択肢 5&#10;選択肢 6&#10;"
-              >
-景品 1
-景品 2
-景品 3
-景品 4
-景品 5
-景品 6</textarea>
-              <div class="prize-tags" id="prizeTags"></div>
+              <label>景品を選択</label>
+            
+              <div id="prizeCheckboxList" class="prize-checkbox-list">
+                <!-- JSで生成 -->
+              </div>
             </div>
             <div class="control-section">
               <button class="spin-button" id="spinBtn" onclick="spin()">🎡 回す！</button>
             </div>
           </div>
-
           <!-- Management Panel -->
           <div class="management-panel">
             <div class="management-title">📋 非表示管理</div>
+            <div id="prizeTags" class="prize-tags"></div>
             <div class="management-list" id="managementList">
               <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.85rem;">読み込み中...</p>
             </div>
@@ -945,11 +953,11 @@
       </div>
     </div>
   </div>
-
   <!-- Modal Popup -->
   <div class="modal-overlay" id="resultModal">
     <div class="modal-content">
       <div class="result-label">🎉 抽選結果 🎉</div>
+      <div id="resultImageArea" style="margin-bottom:1rem; text-align: center;"></div>
       <div class="result-grid">
         <div class="result-item">
           <div class="result-item-label">当選番号</div>
@@ -966,24 +974,24 @@
       </div>
     </div>
   </div>
-<script>
-function openQR() {
-  document.getElementById("qrModal").classList.add("active");
-}
-
-// 背景クリックで閉じる
-document.getElementById("qrModal").addEventListener("click", () => {
-  document.getElementById("qrModal").classList.remove("active");
-});
-</script>
+  <script>
+    function openQR() {
+      document.getElementById("qrModal").classList.add("active");
+    }
+    
+    // 背景クリックで閉じる
+    document.getElementById("qrModal").addEventListener("click", () => {
+      document.getElementById("qrModal").classList.remove("active");
+    });
+  </script>
   <script type="module">
     /* ============================================
-       Firebase Setup (Numbers Only)
-       ============================================ */
-
+    Firebase Setup (Numbers Only)
+    ============================================ */
+        
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { getFirestore, collection, onSnapshot, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
-
+    
     const firebaseConfig = {
       apiKey: "AIzaSyCIQhHuF3we247IxmhrO3j-Gmr5RFYf-q4",
       authDomain: "chat-sites.firebaseapp.com",
@@ -993,18 +1001,28 @@ document.getElementById("qrModal").addEventListener("click", () => {
       messagingSenderId: "36894057874",
       appId: "1:36894057874:web:2ae9634f2b1d1081a90d4b"
     };
-
+    
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-
+    
     /* ============================================
-       Glass-morphism × Dark Mode Roulette
-       ============================================ */
+    Glass-morphism × Dark Mode Roulette
+    ============================================ */
 
     const leftCanvas = document.getElementById("wheelLeft");
     const rightCanvas = document.getElementById("wheelRight");
     const leftCtx = leftCanvas.getContext("2d");
     const rightCtx = rightCanvas.getContext("2d");
+
+    // ⭐ ここで景品＋画像を定義
+    const prizeMaster = [
+      { name: "モバイルバッテリー", img: "icons/Prezents/1.png" },
+      { name: "Amazonギフト券", img: "icons/Prezents/2.png" },
+      { name: "スタバギフト券", img: "icons/Prezents/3.jpg" },
+      { name: "防水スピーカー", img: "icons/Prezents/4.png" },
+      { name: "ヘッドホン", img: "icons/Prezents/5.png" },
+      { name: "マックカード", img: "icons/Prezents/6.png" }
+    ];
 
     let numbers = [];
     let prizes = [];
@@ -1177,37 +1195,50 @@ document.getElementById("qrModal").addEventListener("click", () => {
     // ============================================
     // ⭐ 修正: textareaからローカルのallPrizesを更新
     // ============================================
-    function updatePrizesFromTextarea() {
-      const textarea = document.getElementById("prizeTextarea");
-      const inputPrizes = textarea.value
-        .split("\n")
-        .map(v => v.trim())
-        .filter(v => v);
-      
-      // ローカルのallPrizesを更新（既存の非表示状態を保持）
-      allPrizes = inputPrizes.map((name) => {
-        const existingPrize = allPrizes.find(p => p.name === name);
+    // ⭐ チェックボックスを作成
+    function createPrizeCheckboxes() {
+      const container = document.getElementById("prizeCheckboxList");
+      container.innerHTML = prizeMaster.map((prize, index) => `
+        <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; cursor: pointer;">
+          <input type="checkbox" value="${index}" style="cursor: pointer;">
+          <span style="color: #000000;">${prize.name}</span>
+        </label>
+      `).join("");
+    }
+
+    // ⭐ チェックボックスから景品を更新
+    function updatePrizesFromCheckbox() {
+      const checked = [...document.querySelectorAll("#prizeCheckboxList input:checked")];
+
+      allPrizes = checked.map(c => {
+        const p = prizeMaster[c.value];
         return {
-          name: name,
-          hidden: existingPrize?.hidden || false
+          name: p.name,
+          img: p.img,
+          hidden: false
         };
       });
-      
-      // 表示用prizesを更新
-      prizes = allPrizes.filter(p => !p.hidden).map(p => p.name);
-      
-      if (prizes.length > 0) {
-        drawWheel(rightCtx, prizes, rightRotation);
-        updatePrizeTags();
-      }
-      
+
+      prizes = allPrizes.map(p => p.name);
+
+      drawWheel(rightCtx, prizes, rightRotation);
       updateManagementList();
     }
 
-    document.getElementById("prizeTextarea").addEventListener("input", updatePrizesFromTextarea);
+    document.addEventListener("change", (e) => {
+      if (e.target.closest("#prizeCheckboxList")) {
+        updatePrizesFromCheckbox();
+      }
+    });
+
+    window.addEventListener("load", () => {
+      createPrizeCheckboxes();
+      updatePrizesFromCheckbox();
+    });
 
     function updatePrizeTags() {
       const container = document.getElementById("prizeTags");
+      if (!container) return;
       container.innerHTML = prizes.map(prize => 
         `<span class="prize-tag">${prize}</span>`
       ).join("");
@@ -1352,6 +1383,9 @@ document.getElementById("qrModal").addEventListener("click", () => {
       document.getElementById("resultNumber").textContent = num;
       document.getElementById("resultPrize").textContent = prize;
       
+      // ⭐ 画像を表示
+      displayResultImage(prize);
+      
       // ============================================
       // ⭐ 修正: 景品が当選したら自動的にローカルで非表示に
       // ============================================
@@ -1375,11 +1409,48 @@ document.getElementById("qrModal").addEventListener("click", () => {
       document.getElementById("resultModal").classList.remove("active");
     };
 
+    // ⭐ 結果表示時に画像を表示
+    function displayResultImage(prizeName) {
+      const imgArea = document.getElementById("resultImageArea");
+      
+      if (!imgArea) {
+        console.warn('resultImageArea not found');
+        return;
+      }
+      
+      // prizeMasterから直接画像を取得
+      const prizeObj = prizeMaster.find(p => p.name === prizeName);
+      
+      console.log('Displaying prize:', prizeName);
+      console.log('Prize object:', prizeObj);
+      
+      if (prizeObj && prizeObj.img) {
+        console.log('Image path:', prizeObj.img);
+        imgArea.innerHTML = `
+          <img src="${prizeObj.img}" style="
+            width:200px;
+            max-width:80%;
+            height:auto;
+            border-radius:1rem;
+            box-shadow:0 10px 30px rgba(0,0,0,0.5);
+            display:block;
+            margin:0 auto;
+          " alt="${prizeName}" onerror="console.error('Image failed to load: ${prizeObj.img}')">
+        `;
+      } else {
+        console.warn('Prize not found or no image:', prizeName);
+        imgArea.innerHTML = `<p style="color: rgba(255, 255, 255, 0.5);">画像なし</p>`;
+      }
+    }
+
     // ============================================
     // ⭐ 修正: hideResult()をローカル管理に対応
     // ============================================
     window.hideResult = async function() {
-      if (!currentResult.number || !currentResult.prize) return;
+      if (!currentResult.number || !currentResult.prize) {
+        console.warn("No current result to hide");
+        return;
+      }
 
       try {
         // 番号非表示（Firebase）
@@ -1396,26 +1467,31 @@ document.getElementById("qrModal").addEventListener("click", () => {
           allPrizes[prizeIndex].hidden = true;
         }
 
-        console.log('Hiding prize:', currentResult.prize);
-        console.log('Updated allPrizes:', allPrizes);
+        console.log("Hiding prize:", currentResult.prize);
+        console.log("Updated allPrizes:", allPrizes);
 
         // 表示用prizesを更新
         prizes = allPrizes.filter(p => !p.hidden).map(p => p.name);
         
         // UI更新
-        await new Promise(r => setTimeout(r, 300));
         refreshWheels();
         updateManagementList();
         updatePrizeTags();
 
-        // モーダルリセット
-        document.getElementById("resultModal").classList.remove("active");
+        // モーダルをクローズ
+        const modal = document.getElementById("resultModal");
+        modal.classList.remove("active");
+        
+        // 状態をリセット
         currentResult = { number: null, prize: null };
         document.getElementById("spinBtn").textContent = "🎡 回す！";
         document.getElementById("spinBtn").disabled = false;
+        
+        console.log("Modal closed and state reset");
 
       } catch (error) {
-        console.error('Error hiding result:', error);
+        console.error("Error hiding result:", error);
+        alert("エラーが発生しました: " + error.message);
       }
     };
 
@@ -1496,16 +1572,8 @@ document.getElementById("qrModal").addEventListener("click", () => {
     }
 
     document.addEventListener('DOMContentLoaded', createSpringParticles);
+
   </script>
   <script type="module" src="layout.js"></script>
-  <script>
-  /* メニュー開閉用（グローバル） */
-  window.toggleMenu = function(){
-      const sidebar = document.getElementById("sidebar");
-      const page = document.getElementById("page");
-      sidebar.classList.toggle("close");
-      page.classList.toggle("shift");
-  };
-  </script>
 </body>
 </html>
