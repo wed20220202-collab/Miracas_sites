@@ -15,7 +15,12 @@ export const captainUsers = [
 
   //Teachers
   "12210295@sankogakuen.jp",
-  "12010311@sankogakuen.jp"
+  "12010311@sankogakuen.jp",
+
+  //etc
+  "kousei10160926@gmail.com",
+  "sohuta0810@gmail.com"
+
 ];
 
 export function canOpenCaptain(email){

@@ -67,8 +67,9 @@ document.getElementById("googleLogin")
         const email = user.email;
 
         // ドメイン制限
-        if (!(email.endsWith("@sankogakuen.jp"))) {
-
+        if (
+            !(email.endsWith("@sankogakuen.jp") || email === "kousei10160926@gmail.com" || email === "sohuta0810@gmail.com")
+        ) {
             alert("学校アカウントでログインしてください");
             await auth.signOut();
             return;
