@@ -1014,6 +1014,9 @@
     const leftCtx = leftCanvas.getContext("2d");
     const rightCtx = rightCanvas.getContext("2d");
 
+    const tickSound = new Audio("sounds/tick.mp3");
+    tickSound.volume = 0.5;
+
     // ⭐ ここで景品＋画像を定義
     const prizeMaster = [
       { name: "モバイルバッテリー", img: "icons/Prezents/1.png" },
@@ -1142,11 +1145,12 @@
       return new Promise(resolve => {
         let rotation = 0;
         let startTime = Date.now();
-        const duration = 10000; // 5秒間回転（より自然な速度）
-        const totalRotations = 5 + Math.random() * 50; // 5～8回転
+        const duration = 10000;
+        const totalRotations = 5 + Math.random() * 50;
+
+        let lastIndex = -1; // ←追加
 
         function easeInOutCubic(t) {
-          // ⭐ 自然な加速・減速曲線
           return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
         }
 
@@ -1154,8 +1158,7 @@
           const elapsed = Date.now() - startTime;
           const progress = Math.min(elapsed / duration, 1);
           const eased = easeInOutCubic(progress);
-          
-          // ⭐ 滑らかな回転速度（ランダムな変動なし）
+
           rotation = eased * totalRotations * Math.PI * 2;
 
           if (isLeft) {
@@ -1166,25 +1169,34 @@
             drawWheel(rightCtx, items, rightRotation);
           }
 
+          // ⭐ ここから追加（音処理）
+          const arc = (2 * Math.PI) / items.length;
+          const normalizedRotation = rotation % (2 * Math.PI);
+          const pointerAngle = -Math.PI / 2;
+
+          const adjustedAngle = (pointerAngle - normalizedRotation + 2 * Math.PI) % (2 * Math.PI);
+          let currentIndex = Math.floor(adjustedAngle / arc);
+
+          if (currentIndex !== lastIndex) {
+            tickSound.currentTime = 0;
+
+            tickSound.playbackRate = 1 + (1 - progress) * 1.5;
+            
+            tickSound.play();
+            lastIndex = currentIndex;
+          }
+          // ⭐ ここまで
+
           if (elapsed < duration) {
             requestAnimationFrame(animate);
           } else {
             const arc = (2 * Math.PI) / items.length;
             const normalizedRotation = rotation % (2 * Math.PI);
-            const pointerAngle = -Math.PI / 2;  // ⭐ ポインターを上部に固定
+            const pointerAngle = -Math.PI / 2;
             const adjustedAngle = (pointerAngle - normalizedRotation + 2 * Math.PI) % (2 * Math.PI);
-            
+
             let index = Math.floor(adjustedAngle / arc);
-            
-            if (index >= items.length) {
-              index = items.length - 1;
-            }
-            if (index < 0) {
-              index = 0;
-            }
-            
-            const result = items[index];
-            resolve(result);
+            resolve(items[index]);
           }
         }
 
