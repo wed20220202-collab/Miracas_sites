@@ -18,6 +18,19 @@ function normalizeDate(date){
   return date.replaceAll("-", "/");
 }
 
+let existingDates = [];
+
+async function loadExistingDates(){
+  try {
+    const data = await jsonpFetch(GAS_URL + "?action=listDates");
+    // GASから届く "2024/04/06" を "2024-04-06" に変換して保存
+    existingDates = data.map(d => d.replace(/\//g, "-")); 
+    console.log("読み込まれた日付リスト:", existingDates); // デバッグ用
+  } catch (e) {
+    console.error("日付取得失敗", e);
+  }
+}
+
 
 /* ===========================
    JSONP ユーティリティ（v4）
@@ -105,16 +118,19 @@ function jsonpPost(url, data){
    初期化
 =========================== */
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", async ()=>{
+  await loadExistingDates();
+  applyDateStyles(existingDates);
 
   initDaySelect();
   initNames();
   initTeams();
   initPlaces();
 
-  initCalendar();
+  initCalendar(); // ←これが止まらなくなる
 
   disableEditor();
+
 });
 
 function disableEditor(){
@@ -137,6 +153,17 @@ function enableEditor(){
 
 }
 
+function applyDateStyles(dates){
+  const style = document.createElement("style");
+
+  style.textContent = dates.map(d => `
+    .fc-daygrid-day[data-date="${d}"] .fc-daygrid-day-frame {
+      background-color: #95d3ff;
+    }
+  `).join("");
+
+  document.head.appendChild(style);
+}
 /* ===========================
    カレンダー
 =========================== */
@@ -146,6 +173,21 @@ function initCalendar(){
   const calendar = new FullCalendar.Calendar(
     document.getElementById("calendar"),
     {
+      dayCellDidMount: function(info){
+
+        const date = info.dateStr;
+
+        if(existingDates.includes(date)){
+
+          const frame = info.el.querySelector('.fc-daygrid-day-frame');
+
+          if(frame){
+            frame.style.backgroundColor = "#95d3ff";
+          }
+
+        }
+
+      },
 
       initialView:"dayGridMonth",
       dateClick: async function(info){

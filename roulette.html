@@ -1017,6 +1017,26 @@
     const tickSound = new Audio("sounds/tick.mp3");
     tickSound.volume = 0.5;
 
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    async function loadSound() {
+      const res = await fetch("sounds/tick.mp3");
+      const arrayBuffer = await res.arrayBuffer();
+      return await audioCtx.decodeAudioData(arrayBuffer);
+    }
+
+    let tickBuffer;
+    loadSound().then(buf => tickBuffer = buf);
+
+    function playTick() {
+      if (!tickBuffer) return;
+
+      const source = audioCtx.createBufferSource();
+      source.buffer = tickBuffer;
+      source.connect(audioCtx.destination);
+      source.start(0);
+    }
+
     // ⭐ ここで景品＋画像を定義
     const prizeMaster = [
       { name: "モバイルバッテリー", img: "icons/Prezents/1.png" },
@@ -1178,11 +1198,7 @@
           let currentIndex = Math.floor(adjustedAngle / arc);
 
           if (currentIndex !== lastIndex) {
-            tickSound.currentTime = 0;
-
-            tickSound.playbackRate = 1 + (1 - progress) * 1.5;
-            
-            tickSound.play();
+            playTick();
             lastIndex = currentIndex;
           }
           // ⭐ ここまで
@@ -1202,6 +1218,24 @@
 
         animate();
       });
+    }
+
+    let winBuffer;
+    async function loadWinSound() {
+      const res = await fetch("sounds/win.mp3");
+      const arrayBuffer = await res.arrayBuffer();
+      return await audioCtx.decodeAudioData(arrayBuffer);
+    }
+
+    loadWinSound().then(buf => winBuffer = buf);
+
+    function playWin() {
+      if (!winBuffer) return;
+
+      const source = audioCtx.createBufferSource();
+      source.buffer = winBuffer;
+      source.connect(audioCtx.destination);
+      source.start(0);
     }
 
     // ============================================
@@ -1362,10 +1396,18 @@
     }
 
     window.spin = async function() {
+
+      // ⭐ これを一番最初に追加
+      if (audioCtx.state === "suspended") {
+        await audioCtx.resume();
+      }
+
       const spinBtn = document.getElementById("spinBtn");
       
       if (spinBtn.textContent.includes("結果確認")) {
         document.getElementById("resultModal").classList.add("active");
+        playWin();
+
         return;
       }
       
