@@ -1,0 +1,744 @@
+/* ========================================
+   OC管理システム - スマートフォン向けCSS（大サイズ版）
+   ========================================
+   このファイルはモバイルデバイス（最大幅1000px）向けの
+   レスポンシブスタイルを定義します。
+   カレンダーとフォーム要素を大きく表示します。
+   ======================================== */
+
+/* ========================================
+   1. メディアクエリ: スマートフォン対応
+   ======================================== */
+@media (max-width: 1000px) {
+
+  /* ========================================
+     2. 基本レイアウト調整
+     ======================================== */
+  
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* ========================================
+     3. トップバー（ヘッダー）
+     ======================================== */
+  
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .topbar-left h1 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .menu-toggle {
+    background: none;
+    border: none;
+    font-size: 28px;
+    cursor: pointer;
+    padding: 6px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  .topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .header-clock {
+    font-size: 14px;
+    color: #666;
+    min-width: 70px;
+    text-align: right;
+  }
+
+  /* ========================================
+     4. プロフィール メニュー
+     ======================================== */
+  
+  .profile {
+    position: relative;
+  }
+
+  .profile-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 6px;
+    color: #333;
+    min-height: 48px;
+    min-width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .profile-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 160px;
+    margin-top: 8px;
+    z-index: 1000;
+  }
+
+  .profile-menu.active {
+    display: block;
+  }
+
+  .profile-name {
+    padding: 14px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .profile-menu hr {
+    margin: 8px 0;
+    border: none;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .logout-btn {
+    width: 100%;
+    padding: 12px 18px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 15px;
+    color: #d32f2f;
+    cursor: pointer;
+    border-radius: 0;
+    min-height: 48px;
+  }
+
+  .logout-btn:hover {
+    background-color: #fafafa;
+  }
+
+  /* ========================================
+     5. サイドバー（モバイル対応）
+     ======================================== */
+  
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 90px;
+    height: 100vh;
+    background-color: #f5f5f5;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 18px;
+    gap: 14px;
+    z-index: 99;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar.close {
+    transform: translateX(-100%);
+  }
+
+  .sidebar a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+
+  .sidebar a:hover {
+    background-color: #e3f2fd;
+    border-color: #90caf9;
+  }
+
+  .sidebar a img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+  }
+
+  /* ========================================
+     6. ページコンテナ
+     ======================================== */
+  
+  .page {
+    margin-left: 90px;
+    padding: 18px;
+    transition: margin-left 0.3s ease;
+    min-height: calc(100vh - 60px);
+  }
+
+  .page.shift {
+    margin-left: 90px;
+  }
+
+  /* ========================================
+     7. イベント レイアウト
+     ======================================== */
+  
+  .event-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+  }
+
+  /* ========================================
+     8. カレンダーボックス
+     ======================================== */
+  
+  .calendar-box {
+    width: 100%;
+    flex: none;
+    min-width: auto;
+    max-width: none;
+  }
+
+  .calendar-box h2 {
+    margin: 0 0 18px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  #calendar {
+    max-width: 100%;
+    font-size: 0.95em;
+    width: 100%;
+  }
+
+  /* FullCalendarの調整 */
+  .fc {
+    font-size: 0.95em;
+  }
+
+  .fc .fc-button-primary {
+    background-color: #1976d2;
+    border-color: #1976d2;
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+
+  .fc .fc-button-primary:not(:disabled).fc-button-active {
+    background-color: #1565c0;
+    border-color: #1565c0;
+  }
+
+  .fc .fc-daygrid-day {
+    padding: 6px 3px;
+  }
+
+  .fc .fc-daygrid-day-frame {
+    min-height: 80px;
+  }
+
+  .fc .fc-daygrid-day-number {
+    font-size: 16px;
+    padding: 6px;
+  }
+
+  .fc .fc-col-header-cell {
+    padding: 10px 0;
+    font-size: 15px;
+  }
+
+  .fc-daygrid-day.highlight .fc-daygrid-day-frame {
+    background-color: #95d3ff !important;
+  }
+
+  /* ========================================
+     9. エディターボックス
+     ======================================== */
+  
+  .editor-box {
+    width: 100%;
+    flex: none;
+    min-width: auto;
+  }
+
+  .editor-box h2 {
+    margin: 0 0 18px 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  /* ========================================
+     10. イベント エディター（フォーム）
+     ======================================== */
+  
+  .event-editor {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px 0;
+    align-items: stretch;
+  }
+
+  .event-editor h3 {
+    grid-column: 1 / -1;
+    margin: 24px 0 14px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+  }
+
+  .event-editor label {
+    font-size: 15px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .event-editor input,
+  .event-editor select,
+  .event-editor textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-family: inherit;
+  }
+
+  .event-editor input:focus,
+  .event-editor select:focus,
+  .event-editor textarea:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.15);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  /* ========================================
+     11. 日付行
+     ======================================== */
+  
+  .date-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    grid-column: 1 / -1;
+  }
+
+  .date-row select {
+    width: 100%;
+  }
+
+  .small {
+    width: 100%;
+  }
+
+  .weekday {
+    width: 100%;
+    background-color: #f5f5f5;
+    text-align: center;
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  /* ========================================
+     12. 記入者行
+     ======================================== */
+  
+  .name-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    grid-column: 1 / -1;
+  }
+
+  .name {
+    width: 100%;
+  }
+
+  /* ========================================
+     13. チーム行
+     ======================================== */
+  
+  .team-row {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    grid-column: 1 / -1;
+  }
+
+  .team {
+    width: 100%;
+  }
+
+  /* ========================================
+     14. ボタン
+     ======================================== */
+  
+  .save-btn,
+  .export-btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    padding: 16px;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 52px;
+  }
+
+  .save-btn {
+    background-color: #1976d2;
+    color: white;
+  }
+
+  .save-btn:hover {
+    background-color: #1565c0;
+  }
+
+  .save-btn:active {
+    transform: scale(0.98);
+  }
+
+  .export-btn {
+    background-color: #ffa700;
+    color: white;
+  }
+
+  .export-btn:hover {
+    background-color: #d27e18;
+  }
+
+  .export-btn:active {
+    transform: scale(0.98);
+  }
+
+  /* ========================================
+     15. AIボタン（要約生成）
+     ======================================== */
+  
+  .ai-textarea-wrap {
+    position: relative;
+    grid-column: 1 / -1;
+  }
+
+  .ai-btn {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 44px;
+    min-width: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-btn:hover {
+    background-color: #e0e0e0;
+  }
+
+  /* ========================================
+     16. 来場者グリッド
+     ======================================== */
+  
+  .visitor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+    grid-column: 1 / -1;
+  }
+
+  .visitor-grid label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    padding: 6px;
+  }
+
+  .visitor-number {
+    width: 100%;
+    height: 48px;
+    text-align: center;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+
+  .head {
+    font-weight: 600;
+    text-align: center;
+    font-size: 14px;
+    color: #333;
+    padding: 6px;
+  }
+
+  .other-information {
+    width: 100%;
+    padding: 10px;
+    height: 48px;
+    box-sizing: border-box;
+    text-align: left;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    grid-column: 1 / -1;
+  }
+
+  /* ========================================
+     17. ローディングオーバーレイ
+     ======================================== */
+  
+  #loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.35);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  #loadingOverlay.active {
+    display: flex;
+  }
+
+  .loadingBox {
+    background: white;
+    padding: 28px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #ddd;
+    border-top: 5px solid #4285f4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* ========================================
+     18. 振り返りセクション
+     ======================================== */
+  
+  .event-editor > div:has(> select.place) {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .place {
+    width: 100%;
+  }
+
+  /* ========================================
+     19. タッチフレンドリーな調整
+     ======================================== */
+  
+  button, input, select, textarea {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* ========================================
+     20. スクロール最適化
+     ======================================== */
+  
+  body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  input, textarea, select {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* ========================================
+     21. ビューポート最適化
+     ======================================== */
+  
+  @supports (padding: max(0px)) {
+    body {
+      padding-left: max(14px, env(safe-area-inset-left));
+      padding-right: max(14px, env(safe-area-inset-right));
+    }
+  }
+
+}
+
+/* ========================================
+   22. タブレット向け調整（1001px以上）
+   ======================================== */
+@media (min-width: 1001px) {
+
+  .event-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .calendar-box {
+    flex: 0.7;
+    min-width: 350px;
+    max-width: 420px;
+  }
+
+  .editor-box {
+    flex: 1;
+    min-width: 450px;
+  }
+
+  .event-editor {
+    grid-template-columns: minmax(80px, max-content) 1fr;
+    gap: 8px 12px;
+  }
+
+  .event-editor h3 {
+    grid-column: 1 / -1;
+  }
+
+  .date-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .name-row {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+  }
+
+  .team-row {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+  }
+
+  .small {
+    width: 65px;
+  }
+
+  .name {
+    width: auto;
+  }
+
+  .team {
+    width: 75px;
+  }
+
+}
+
+/* ========================================
+   23. 超小型デバイス向け（320px以下）
+   ======================================== */
+@media (max-width: 320px) {
+
+  .topbar-left h1 {
+    font-size: 18px;
+  }
+
+  .event-editor h3 {
+    font-size: 16px;
+  }
+
+  .event-editor label {
+    font-size: 14px;
+  }
+
+  .event-editor input,
+  .event-editor select,
+  .event-editor textarea {
+    font-size: 15px;
+    padding: 10px;
+  }
+
+  .save-btn,
+  .export-btn {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .visitor-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+}
